@@ -169,6 +169,16 @@ Perdas Energéticas: 15%
 RESULTADO FINAL: PRONTO PARA DECOLAR
 ```
 
+## Prints das execuções
+![alt text](prints/image.png)
+![alt text](prints/image-1.png)
+![alt text](prints/image-2.png)
+![alt text](prints/image-3.png)
+![alt text](prints/image-4.png)
+![alt text](prints/image-5.png)
+![alt text](prints/image-6.png)
+```
+
 ## Critérios de Aborto
 
 A decolagem será **ABORTADA** se:
