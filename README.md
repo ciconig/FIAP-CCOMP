@@ -12,17 +12,17 @@ A organização segue um padrão de pastas por período/fase do curso:
 
 ```
 FIAP-CCOMP/
-├── 1CCOMP/                        # Pasta do primeiro ano do curso
+├── 1CCOMP/                                 # Pasta do primeiro ano do curso
 │   ├── FASE1-ATIVIDADE/
-│   │   ├── README.md              # Descrição das atividades da fase
-│   │   ├── requirements.txt       # Dependências do projeto
-│   │   ├── simulador_decolagem.ipynb  # Notebook com implementação
-│   │   └── prints/                # Prints das execuções e resultados
+│   │   ├── README.md                       # Descrição das atividades da fase
+│   │   ├── requirements.txt                # Dependências do projeto
+│   │   ├── simulador_decolagem.ipynb       # Notebook com implementação
+│   │   └── prints/                         # Prints das execuções e resultados
 │   │
-│   ├── FASE2-ATIVIDADE/          # (Próximas fases)
-│   └── FASE3-ATIVIDADE/          # (Estrutura similar)
+│   ├── FASE2-ATIVIDADE/                    # (Próximas fases)
+│   └── FASE3-ATIVIDADE/                    # (Estrutura similar)
 │
-└── README.md                      # Este arquivo
+└── README.md                               # Este arquivo
 ```
 
 ## 🎯 Como Usar
