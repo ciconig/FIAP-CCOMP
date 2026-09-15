@@ -31,6 +31,69 @@ Implementa múltiplas camadas de verificação:
 
 **Resultado Final**: "PRONTO PARA DECOLAR" ou "DECOLAGEM ABORTADA"
 
+```
+INÍCIO
+
+    // Leitura dos dados de telemetria
+    LER temperatura_interna
+    LER temperatura_externa
+    LER integridade_estrutural
+    LER nivel_energia
+    LER pressão_tanques
+    LER status_modulos_criticos
+
+    // Verificação de Temperatura Interna
+    SE temperatura_interna > 50 OU temperatura_interna < -10
+     ENTÃO resultado = "DECOLAGEM ABORTADA"
+
+    // Verificação de Temperatura Externa
+    SE temperatura_externa > 30 OU temperatura_externa < -50
+     ENTÃO resultado = "DECOLAGEM ABORTADA"
+
+    // Verificação de Integridade Estrutural
+    SE integridade_estrutural == 0
+     ENTÃO resultado = "DECOLAGEM ABORTADA"
+
+    // Verificação de Energia
+    SE nivel_energia < 80
+     ENTÃO resultado = "DECOLAGEM ABORTADA"
+
+    // Verificação de Pressão dos Tanques
+    SE pressão_tanques < 400 OU pressão_tanques > 600
+     ENTÃO resultado = "DECOLAGEM ABORTADA"
+
+    // Verificação de Módulos Críticos
+    PARA cada módulo em lista_modulos
+     SE módulo == 0
+      ENTÃO resultado = "DECOLAGEM ABORTADA"
+
+    // Análise Energética
+    energia_disponivel = (nivel_energia * capacidade_total) / 100
+    consumo_total = potencia_decolagem + (potencia_decolagem * 0.15)
+    autonomia = energia_disponivel / consumo_total
+    margem = nivel_energia - energia_minima
+
+    SE margem < 5
+     ENTÃO estado_energia = "CRÍTICO"
+     SENÃO estado_energia = "ADEQUADO"
+
+    // Resultado Final
+    SE todas_verificações == OK
+     ENTÃO resultado = "PRONTO PARA DECOLAR"
+     SENÃO resultado = "DECOLAGEM ABORTADA"
+
+    // Recomendações Automáticas
+    SE nivel_energia < 85
+     MOSTRAR "Recomendação: recarregar antes da decolagem"
+    SE estado_energia == "CRÍTICO"
+     MOSTRAR "Alerta: margem de segurança reduzida"
+
+IMPRIMIR resultado
+
+FIM
+
+```
+
 #### 4. **Análise Energética**
 Calcula a autonomia da aeronave considerando:
 - Capacidade total da bateria (kWh)
