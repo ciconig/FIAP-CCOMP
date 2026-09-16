@@ -240,7 +240,7 @@ RESULTADO FINAL: PRONTO PARA DECOLAR
 ![alt text](prints/image-4.png)
 ![alt text](prints/image-5.png)
 ![alt text](prints/image-6.png)
-```
+![alt text](prints/image-7.png)
 
 ## Critérios de Aborto
 
