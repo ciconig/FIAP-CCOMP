@@ -247,7 +247,7 @@ RESULTADO FINAL: PRONTO PARA DECOLAR
 A decolagem será **ABORTADA** se:
 - Estrutura comprometida (integridade = 0)
 - Energia < 80%
-- Pressão dos tanques < 400 PSI
+- Pressão dos tanques fora da faixa de 400 a 600 PSI
 - Algum módulo crítico inoperante
 - Autonomia estimada < 60 minutos
 - Temperatura fora dos limites operacionais
