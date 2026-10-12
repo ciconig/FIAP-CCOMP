@@ -1,0 +1,20 @@
+Menor combustível: MD10 Brokkr
+Maior prioridade: MD03 Eir
+Carga Medicina: ['MD03']
+Fila ordenada: ['MD03', 'MD02', 'MD01', 'MD05', 'MD04', 'MD09', 'MD08', 'MD06', 'MD10', 'MD07']
+
+Rodada: área livre e sistemas operacionais
+MD03 Eir -> ALERTA
+MD02 Asgard -> AUTORIZADO
+MD01 Thor -> AUTORIZADO
+MD05 Idunn -> AUTORIZADO
+MD04 Njord -> AUTORIZADO
+MD09 Heimdall -> AUTORIZADO
+MD08 Sleipnir -> AUTORIZADO
+MD06 Freyr -> AUTORIZADO
+MD10 Brokkr -> ALERTA
+MD07 Mimir -> AUTORIZADO
+Pousados: ['MD02', 'MD01', 'MD05', 'MD04', 'MD09', 'MD08', 'MD06', 'MD07']
+Em espera: []
+Alertas (base -> topo): ['MD03', 'MD10']
+Próximo alerta a tratar (LIFO): MD10
