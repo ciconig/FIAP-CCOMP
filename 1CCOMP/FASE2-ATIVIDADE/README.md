@@ -22,14 +22,14 @@ Regras propostas, ainda dependentes de alinhamento com o item 2:
 - Baixo combustível OU impedimento gera ALERTA; demais falhas geram ESPERA.
 - Uma autorização simula um pouso sequencial concluído antes do próximo.
 
-O cadastro permanece na ordem inicial MD01..MD10. A fila é uma cópia, reorganizada por Insertion Sort: prioridade crescente e combustível crescente. Empates exatos mantêm a ordem de chegada. Após reordenação, o processamento remove o início da fila (FIFO). Alertas usam pilha (LIFO) somente para demonstrar atendimento manual, sem autorização automática ou estratégia real de emergência.
+O cadastro permanece na ordem inicial MD01..MD10. A fila é uma cópia, reorganizada por Insertion Sort: prioridade crescente, criticidade da carga (Crítica, Alta, Média, Baixa) e combustível crescente. Empates exatos mantêm a ordem de chegada. Após reordenação, o processamento remove o início da fila (FIFO). Alertas usam pilha (LIFO) somente para demonstrar atendimento manual, sem autorização automática ou estratégia real de emergência.
 
 ## Resultado de referência
 
-Menor combustível: MD10 (42%). Maior prioridade com desempate por combustível: MD03 (prioridade 1; 48%). Busca Medicina: MD03.
+Menor combustível: MD10 (42%). Maior prioridade com desempate por criticidade e combustível: MD03 (prioridade 1; Crítica; 48%). Busca Medicina: MD03.
 Fila: MD03, MD02, MD01, MD05, MD04, MD09, MD08, MD06, MD10, MD07.
-Rodada nominal: 8 pousados, 2 alertas (MD03 e MD10), 0 em espera.
+Rodada nominal: 8 pousados, 2 alertas (MD03 e MD10), 0 em espera. Alerta com carga crítica: MD03.
 
 ## Limites
 
-Não há consumo de combustível, ETA, concorrência, persistência, dependências entre módulos ou física de pouso/estabilização. Criticidade é cadastrada, mas não altera a decisão. Fila com pop(0) custa O(n), adequada ao exemplo de dez registros, não a um sistema real de voo. Busca linear O(n); Insertion Sort O(n²) no pior caso e O(n) na melhor situação. Os testes usam somente recursos da biblioteca padrão e asserts.
+Não há consumo de combustível, ETA, concorrência, persistência, dependências entre módulos ou física de pouso/estabilização. Criticidade ordena a fila e destaca alertas críticos, mas não altera a regra de autorização, mantida alinhada ao item 2. Fila com pop(0) custa O(n), adequada ao exemplo de dez registros, não a um sistema real de voo. Busca linear O(n); Insertion Sort O(n²) no pior caso e O(n) na melhor situação. Os testes usam somente recursos da biblioteca padrão e asserts.
