@@ -18,3 +18,4 @@ Pousados: ['MD02', 'MD01', 'MD05', 'MD04', 'MD09', 'MD08', 'MD06', 'MD07']
 Em espera: []
 Alertas (base -> topo): ['MD03', 'MD10']
 Próximo alerta a tratar (LIFO): MD10
+Alertas com carga crítica: ['MD03']

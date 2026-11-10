@@ -5,6 +5,8 @@ Os limites abaixo são hipóteses didáticas, não critérios reais de voo.
 
 COMBUSTIVEL_MINIMO = 50  # Referência de alerta adotada no cenário da equipe.
 MASSA_MAXIMA = 12000    # Hipótese de capacidade da plataforma, em kg.
+# Criticidade da carga: quanto menor o nível, mais crítica.
+NIVEL_CRITICIDADE = {"Crítica": 1, "Alta": 2, "Média": 3, "Baixa": 4}
 
 
 def cadastrar_modulo(modulos, codigo, nome, carga, prioridade,
@@ -12,7 +14,8 @@ def cadastrar_modulo(modulos, codigo, nome, carga, prioridade,
     """Guarda um registro em uma lista; rejeita dados fora do domínio."""
     if buscar_por_codigo(modulos, codigo) is not None:
         return False
-    if not (1 <= prioridade <= 5 and 0 <= combustivel <= 100 and massa > 0):
+    if not (1 <= prioridade <= 5 and 0 <= combustivel <= 100 and massa > 0
+            and criticidade in NIVEL_CRITICIDADE):
         return False
     modulos.append({
         "codigo": codigo, "nome": nome, "carga": carga,
@@ -43,7 +46,7 @@ def buscar_menor_combustivel(modulos):
 
 
 def buscar_maior_prioridade(modulos):
-    """Prioridade 1 é a mais alta. Desempate: menor combustível."""
+    """Prioridade 1 é a mais alta. Desempate: criticidade, depois menor combustível."""
     if len(modulos) == 0:
         return None
     melhor = modulos[0]
@@ -62,11 +65,26 @@ def buscar_por_carga(modulos, carga):
     return encontrados
 
 
+def buscar_por_criticidade(modulos, criticidade):
+    """Busca linear; devolve todos os registros com a criticidade informada."""
+    encontrados = []
+    for modulo in modulos:
+        if modulo["criticidade"].lower() == criticidade.lower():
+            encontrados.append(modulo)
+    return encontrados
+
+
 def vem_antes(a, b):
-    """Regra de fila: prioridade crescente, depois combustível crescente."""
-    return (a["prioridade"] < b["prioridade"] or
-            (a["prioridade"] == b["prioridade"] and
-             a["combustivel"] < b["combustivel"]))
+    """Regra de fila: prioridade crescente, depois criticidade da carga
+    (mais crítica primeiro), depois combustível crescente.
+    """
+    if a["prioridade"] != b["prioridade"]:
+        return a["prioridade"] < b["prioridade"]
+    nivel_a = NIVEL_CRITICIDADE[a["criticidade"]]
+    nivel_b = NIVEL_CRITICIDADE[b["criticidade"]]
+    if nivel_a != nivel_b:
+        return nivel_a < nivel_b
+    return a["combustivel"] < b["combustivel"]
 
 
 def ordenar_fila(fila):
@@ -179,6 +197,9 @@ def executar_simulacao():
     print("Alertas (base -> topo):", [m["codigo"] for m in pilha_alertas])
     if len(pilha_alertas) > 0:
         print("Próximo alerta a tratar (LIFO):", pilha_alertas[-1]["codigo"])
+    # A pilha atende por ordem de chegada ao alerta; a busca destaca os críticos.
+    criticos = buscar_por_criticidade(pilha_alertas, "Crítica")
+    print("Alertas com carga crítica:", [m["codigo"] for m in criticos])
 
 
 if __name__ == "__main__":
