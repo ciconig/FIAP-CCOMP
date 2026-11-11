@@ -1,4 +1,4 @@
-# Aurora Siger — Sistema de Análise e Decisão da Colônia (Fase 3)
+# Aurora Siger - Sistema de Análise e Decisão da Colônia (Fase 3)
 
 Sistema em Python que organiza os dados dos sensores da colônia, analisa o uso de energia e usa
 regressão linear para prever a geração eólica a partir da velocidade do vento.
@@ -11,10 +11,26 @@ apoiar a decisão de ligar, reduzir ou desligar cargas.
 
 | Parte | Arquivo | Situação |
 | --- | --- | --- |
-| Geração dos dados da colônia (clima, geração e consumo de 24 h) | `gerar_dados.py` | Pronto |
-| Previsão de geração eólica por regressão linear | `modelo_previsao.py` | Pronto |
-| Regras de decisão (priorizar sistemas, reduzir consumo) | `decisao.py` | Em desenvolvimento |
-| Análise de energia (geração × consumo × reserva) | `analise_energia.py` | Em desenvolvimento |
+| Geração dos dados da colônia (clima, geração e consumo de 24 h) | [utils/gerar_dados.py](utils/gerar_dados.py) | Pronto |
+| Previsão de geração eólica por regressão linear | [utils/modelo_previsao.py](utils/modelo_previsao.py) | Pronto |
+| Análise dos dados, energia, decisões e previsão | [notebooks/analise_dados.ipynb](notebooks/analise_dados.ipynb) | Pronto |
+
+## Notebook de análise dos dados
+
+O [notebook de análise](notebooks/analise_dados.ipynb) reúne o fluxo completo da atividade,
+consumindo os dados de `utils/gerar_dados.py`. A semente `np.random.seed(42)` torna os resultados
+reproduzíveis. O conteúdo inclui:
+
+- Organização dos sistemas em hierarquia, registros chave-valor e listas paralelas.
+- Balanço diário de geração e consumo, classificação das horas de risco e excedente e simulação
+  da reserva da bateria, incluindo energia não atendida e excedente não armazenado.
+- Regras de decisão com prioridade para suporte à vida e comunicação, além de uma simulação que
+  desliga laboratório e lazer em modo economia e recalcula a reserva a cada hora.
+- Regressão linear da geração eólica em função do vento e resumo dos resultados com tabelas e gráficos.
+
+As regras de decisão e a regressão são implementadas em Python puro; pandas e Matplotlib são
+usados para organizar tabelas e visualizar os resultados. A análise de energia e as decisões já
+estão implementadas no notebook.
 
 ## Como os dados são organizados
 
@@ -72,19 +88,40 @@ referência.
 
 ## Como executar
 
-Requisitos: Python 3 e NumPy (usado apenas na geração dos dados).
+### Notebook de análise
+
+Requisitos: Python 3, NumPy, pandas, Matplotlib e um ambiente com suporte a notebooks Jupyter.
+Para instalar as dependências no ambiente Python que será usado pelo notebook:
 
 ```bash
-python modelo_previsao.py
+python -m pip install numpy pandas matplotlib ipykernel jupyter
+```
+
+1. Abra [notebooks/analise_dados.ipynb](notebooks/analise_dados.ipynb) no VS Code com a extensão
+   Jupyter ou no Jupyter Notebook/Lab.
+2. Selecione o kernel do ambiente Python em que instalou as dependências.
+3. Execute todas as células em ordem, desde a primeira, para gerar as tabelas, gráficos e conclusões.
+
+A primeira célula localiza automaticamente `utils/gerar_dados.py` quando executada a partir da
+raiz do repositório, da pasta da atividade ou da pasta `notebooks`.
+
+### Módulo de previsão pelo terminal
+
+Para executar apenas a previsão, são necessários Python 3 e NumPy. A partir da pasta
+`1CCOMP/FASE3-ATIVIDADE`, execute:
+
+```bash
+python utils/modelo_previsao.py
 ```
 
 O bloco `if __name__ == "__main__"` de `modelo_previsao.py` importa o gerador de dados, ajusta o
-modelo e mostra a previsão. Se o arquivo de dados tiver outro nome, ajuste apenas a linha
-`from gerar_dados import gerar_dados`.
+modelo e mostra a previsão.
 
 ## Exemplo de entrada e saída
 
 Entrada: vento de 11 m/s.
+
+Execute o exemplo abaixo com a pasta `utils` como diretório atual, para importar os módulos locais.
 
 ```py
 from gerar_dados import gerar_dados

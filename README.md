@@ -7,22 +7,22 @@ Repositório de atividades e projetos do curso de Ciência da Computação da FI
 | Ano | Fase | Projeto | Documentação |
 | --- | --- | --- | --- |
 | 1CCOMP | 1 | Verificação de pré-decolagem da nave AURORA | [Fase 1](1CCOMP/FASE1-ATIVIDADE/README.md) |
-| 1CCOMP | 2 | MGPEB — protótipo didático de gerenciamento de módulos e pousos | [Fase 2](1CCOMP/FASE2-ATIVIDADE/README.md) |
-| 1CCOMP | 3 | Aurora Siger — Sistema de Análise e Decisão da Colônia | [Fase 3](1CCOMP/FASE3-ATIVIDADE/README.md) |
+| 1CCOMP | 2 | MGPEB - protótipo didático de gerenciamento de módulos e pousos | [Fase 2](1CCOMP/FASE2-ATIVIDADE/README.md) |
+| 1CCOMP | 3 | Aurora Siger - Sistema de Análise e Decisão da Colônia | [Fase 3](1CCOMP/FASE3-ATIVIDADE/README.md) |
 
-### Fase 1 — Verificação de decolagem
+### Fase 1 - Verificação de decolagem
 
 Notebook de simulação e análise de telemetria para avaliar as condições de decolagem da nave AURORA. A atividade aborda sensores, integridade estrutural, energia, pressão dos tanques, módulos críticos e autonomia energética.
 
 Utiliza Python, pandas e NumPy. As imagens das execuções estão na pasta `prints/` da atividade.
 
-### Fase 2 — MGPEB
+### Fase 2 - MGPEB
 
 Protótipo em Python 3 do item 3 da atividade integradora, sem bibliotecas externas. Implementa cadastro de dez módulos, buscas lineares, ordenação por prioridade e combustível com Insertion Sort, processamento de fila (FIFO) e pilha de alertas (LIFO).
 
 Na rodada nominal, o programa registra oito pousos e dois alertas. As regras e os limites adotados são hipóteses didáticas; consulte a documentação da fase para os critérios e as limitações da simulação.
 
-### Fase 3 — Aurora Siger
+### Fase 3 - Aurora Siger
 
 Sistema em Python para organizar dados dos sensores da colônia e prever a geração eólica a partir da velocidade do vento. O gerador utiliza NumPy para criar um histórico de 24 horas com clima, geração solar e eólica, consumo dos sistemas e informações da bateria.
 
