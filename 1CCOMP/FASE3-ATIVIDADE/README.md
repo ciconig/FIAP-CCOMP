@@ -198,3 +198,34 @@ geração=40 consumo=70 reserva=100 -> ALERTA: consumo alto e maior que a geraç
 geração=80 consumo=30 reserva=100 -> SUGESTÃO: armazenar energia excedente
 geração=20 consumo=60 reserva=30  -> ALERTA CRÍTICO: ativar modo economia e desligar não essenciais
 ```
+
+## Como o sistema ajuda a melhorar o uso de energia
+
+A energia da colônia é limitada. Nos dados de teste do [notebook de análise](notebooks/analise_dados.ipynb)
+(24 h, semente 42), a colônia gera **621 kWh** (475 kWh eólica e 146 kWh solar) e pede **879 kWh**: o
+consumo supera a geração em 19 das 24 horas e o dia fecha com déficit de 258 kWh. Sem nenhuma decisão,
+a bateria (100 kWh no início) se esgota por volta da hora 5, fica vazia por 14 horas e deixa 158 kWh de
+consumo sem atendimento.
+
+O sistema não cria energia: ele melhora **como** ela é usada, em quatro passos.
+
+1. **Organiza** os dados em hierarquia, registros chave-valor e listas paralelas (seção 2 do notebook), para que geração, consumo e reserva possam ser consultados e comparados hora a hora.
+2. **Analisa** a geração contra o consumo e acompanha a reserva da bateria (seção 3), apontando as horas de risco e as horas de excedente.
+3. **Decide** com prioridade (seção 4, `decidir()` em `utils/decisoes.py`): com a reserva baixa e o consumo acima da geração, ativa o modo economia e desliga laboratório e lazer, mantendo suporte à vida e comunicação.
+4. **Prevê** a geração eólica pela regressão linear (seção 5, `utils/modelo_previsao.py`, descrita acima): para vento de 11 m/s o modelo estima 27,9 kWh, próximo dos 27 kWh esperados na atividade, e ajuda a saber quanta energia a colônia pode esperar.
+
+Resultado da simulação de 24 h, sem e com as decisões (seção 4.2 do notebook):
+
+| Indicador | A - sem decisões | B - com decisões |
+| --- | --- | --- |
+| Consumo considerado | 879 kWh | 691 kWh |
+| Consumo não atendido | 158 kWh | 0 kWh |
+| Horas com a bateria vazia | 14 h | 0 h |
+| Reserva ao final do dia | 0 kWh | 30 kWh |
+
+As decisões reduzem o consumo em 188 kWh (21,4%), todos retirados de laboratório e lazer; os sistemas
+essenciais continuam atendidos o dia inteiro e a bateria nunca chega a zero. Em outras palavras, o
+sistema troca o consumo não essencial pela garantia de energia para o que mantém a colônia viva.
+
+Limites: os dados são simulados e a previsão ainda não alimenta as regras de decisão, que usam apenas
+geração, consumo e reserva da bateria. Ligar as duas partes é o próximo passo natural do projeto.
