@@ -2,7 +2,7 @@ import numpy as np
 
 
 def criar_estrutura():
-    """Representa hierárquica dos sistemas."""
+    """Representação hierárquica dos sistemas da colônia."""
     return {
         "energia": {
             "geracao": ["solar", "eolica"],
@@ -15,9 +15,23 @@ def criar_estrutura():
     }
 
 
-def gerar_dados():
+def mostrar_hierarquia(estrutura, nivel=0):
+    """Percorre e exibe a estrutura hierárquica da colônia (dicionários e listas aninhados)."""
+    for chave, valor in estrutura.items():
+        print("  " * nivel + "- " + chave)
+        if isinstance(valor, dict):
+            mostrar_hierarquia(valor, nivel + 1)
+        else:
+            for item in valor:
+                print("  " * (nivel + 1) + "• " + item)
+
+
+def gerar_dados(seed=None):
     """
     Gera dados para 24 horas.
+
+    Se seed for informada, os valores aleatórios ficam reproduzíveis
+    (mesma seed -> mesmos dados).
 
     Unidades:
     - Vento: m/s
@@ -25,6 +39,9 @@ def gerar_dados():
     - Temperatura: °C
     - Geração, consumo e reserva: kWh
     """
+    if seed is not None:
+        np.random.seed(seed)
+
     irradiancia = np.array([
         0, 0, 0, 0, 0, 0,
         50, 100, 200, 300, 400, 500,
@@ -108,6 +125,24 @@ def gerar_dados():
     }
 
     return dados
+
+
+def extrair_series(historico):
+    """Converte o histórico (lista de dicionários) em listas paralelas."""
+    series = {
+        "hora": [], "vento_ms": [], "irradiancia_wm2": [], "temperatura_c": [],
+        "solar_kwh": [], "eolica_kwh": [], "geracao_kwh": [], "consumo_kwh": [],
+    }
+    for registro in historico:
+        series["hora"].append(registro["hora"])
+        series["vento_ms"].append(registro["clima"]["vento_ms"])
+        series["irradiancia_wm2"].append(registro["clima"]["irradiancia_wm2"])
+        series["temperatura_c"].append(registro["clima"]["temperatura_c"])
+        series["solar_kwh"].append(registro["geracao"]["solar_kwh"])
+        series["eolica_kwh"].append(registro["geracao"]["eolica_kwh"])
+        series["geracao_kwh"].append(registro["geracao"]["total_kwh"])
+        series["consumo_kwh"].append(registro["consumo"]["total_kwh"])
+    return series
 
 
 def separar_dados_regressao(historico):

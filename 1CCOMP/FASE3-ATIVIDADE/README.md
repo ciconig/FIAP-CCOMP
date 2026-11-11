@@ -11,9 +11,15 @@ apoiar a decisão de ligar, reduzir ou desligar cargas.
 
 | Parte | Arquivo | Situação |
 | --- | --- | --- |
-| Geração dos dados da colônia (clima, geração e consumo de 24 h) | [utils/gerar_dados.py](utils/gerar_dados.py) | Pronto |
+| Dados da colônia: geração de 24 h, hierarquia e séries | [utils/gerar_dados.py](utils/gerar_dados.py) | Pronto |
+| Análise de energia e regras de decisão | [utils/decisoes.py](utils/decisoes.py) | Pronto |
 | Previsão de geração eólica por regressão linear | [utils/modelo_previsao.py](utils/modelo_previsao.py) | Pronto |
-| Análise dos dados, energia, decisões e previsão | [notebooks/analise_dados.ipynb](notebooks/analise_dados.ipynb) | Pronto |
+| Sistema completo pelo terminal (dados → energia → decisões → previsão) | [main.py](main.py) | Pronto |
+| Testes (apenas biblioteca padrão e `assert`) | [test_sistema.py](test_sistema.py) | Pronto |
+| Análise dos dados com tabelas e gráficos | [notebooks/analise_dados.ipynb](notebooks/analise_dados.ipynb) | Pronto |
+
+Cada módulo cuida de uma parte: `gerar_dados.py` só produz e organiza os dados, `decisoes.py` só aplica
+regras e `modelo_previsao.py` só faz a previsão. O `main.py` e o notebook apenas chamam essas funções.
 
 ## Notebook de análise dos dados
 
@@ -28,9 +34,8 @@ reproduzíveis. O conteúdo inclui:
   desliga laboratório e lazer em modo economia e recalcula a reserva a cada hora.
 - Regressão linear da geração eólica em função do vento e resumo dos resultados com tabelas e gráficos.
 
-As regras de decisão e a regressão são implementadas em Python puro; pandas e Matplotlib são
-usados para organizar tabelas e visualizar os resultados. A análise de energia e as decisões já
-estão implementadas no notebook.
+As regras de decisão e a regressão são implementadas em Python puro, nos módulos de `utils/`;
+pandas e Matplotlib são usados no notebook apenas para organizar tabelas e visualizar os resultados.
 
 ## Como os dados são organizados
 
@@ -88,6 +93,17 @@ referência.
 
 ## Como executar
 
+### Sistema completo pelo terminal
+
+Requisitos: Python 3 e NumPy (`python -m pip install numpy`). A partir da pasta `1CCOMP/FASE3-ATIVIDADE`:
+
+```bash
+python main.py          # executa o sistema completo
+python test_sistema.py  # executa os testes
+```
+
+O `main.py` usa a semente 42, a mesma do notebook, então a saída é sempre igual.
+
 ### Notebook de análise
 
 Requisitos: Python 3, NumPy, pandas, Matplotlib e um ambiente com suporte a notebooks Jupyter.
@@ -127,25 +143,24 @@ Execute o exemplo abaixo com a pasta `utils` como diretório atual, para importa
 from gerar_dados import gerar_dados
 import modelo_previsao as mp
 
-historico = gerar_dados()["historico"]
+historico = gerar_dados(seed=42)["historico"]
 resultado = mp.executar_previsao(historico, vento_ms=11)
+print(resultado["equacao"])
 print(resultado["mensagem"])
 ```
 
 Saída:
 
 ```
-Equação da reta: y = 0.19 + 2.53 * x
-Vento (entrada): 11 m/s
-Geração eólica prevista: 28.01 kWh
-R²: 0.969 | EMA: 1.12 kWh
-Qualidade do ajuste: Excelente
-PREVISÃO: com vento de 11 m/s, a geração eólica estimada é de 28.0 kWh (R² = 0.97, ajuste Excelente).
+y = -0.15 + 2.55 * x
+PREVISÃO: com vento de 11 m/s, a geração eólica estimada é de 27.9 kWh (R² = 0.96, ajuste Excelente).
 ```
 
-Os coeficientes mudam um pouco a cada execução, porque a geração eólica dos dados de teste recebe uma
-variação aleatória de -2 a +2 kWh. O resultado fica sempre próximo de 27 kWh para vento de 11 m/s,
-que é o valor esperado na atividade.
+A geração eólica dos dados de teste recebe uma variação aleatória de -2 a +2 kWh. Com `seed=42` a
+saída é sempre a mesma; sem semente, os coeficientes mudam um pouco a cada execução, mas o resultado
+fica sempre próximo de 27 kWh para vento de 11 m/s, que é o valor esperado na atividade. Com os dados
+do próprio enunciado (vento `[8, 10, 12]`, energia `[20, 25, 30]`) a reta é `y = 2.5 * x` e a
+previsão para 11 m/s é 27,5 kWh, o que é verificado em `test_sistema.py`.
 
 ## Principais funções de `modelo_previsao.py`
 
@@ -163,14 +178,23 @@ que é o valor esperado na atividade.
 
 ## Regras de decisão do sistema
 
-Estas são as regras que o módulo de decisão aplica sobre os dados e as previsões:
+As regras ficam em `decidir()`, em [utils/decisoes.py](utils/decisoes.py). A "energia" do enunciado
+corresponde à **reserva da bateria**: é ela que diz quanta energia a colônia ainda tem. As regras são
+testadas da mais grave para a mais branda (limites: reserva baixa abaixo de 50 kWh, consumo alto a
+partir de 40 kWh/h):
 
-- Se energia < 50 kWh, reduzir o consumo.
-- Se energia < 50 kWh **e** consumo alto, ativar modo economia.
-- Manter sempre ligados os sistemas essenciais (suporte à vida e comunicação) e desligar os não
-  essenciais primeiro.
-- Se consumo > geração, gerar alerta de risco.
-- Se geração > consumo, sugerir armazenamento do excedente na bateria.
+1. Reserva baixa **e** consumo maior que a geração → `ALERTA CRÍTICO`: modo economia, desligar não essenciais.
+2. Reserva baixa → `ALERTA`: reduzir consumo.
+3. Consumo alto **e** maior que a geração → `ALERTA`: reduzir consumo.
+4. Consumo maior que a geração → `ALERTA`: consumo maior que geração.
+5. Geração maior que o consumo → `SUGESTÃO`: armazenar o excedente na bateria.
+6. Caso contrário → operação normal.
 
-Exemplo de entrada e saída de uma regra: entrada `energia = 40, consumo = 70` →
-saída `ALERTA: reduzir consumo`.
+Os sistemas essenciais (suporte à vida e comunicação) nunca são desligados; laboratório e lazer são
+cortados primeiro. Exemplos de entrada e saída, como impressos por `python main.py`:
+
+```
+geração=40 consumo=70 reserva=100 -> ALERTA: consumo alto e maior que a geração - reduzir consumo
+geração=80 consumo=30 reserva=100 -> SUGESTÃO: armazenar energia excedente
+geração=20 consumo=60 reserva=30  -> ALERTA CRÍTICO: ativar modo economia e desligar não essenciais
+```
