@@ -189,7 +189,7 @@ Regras aplicadas no menu:
 - `novo not in TRANSICOES[atual]` bloqueia transições proibidas, como `aberto` direto para `resolvido`.
 - O dia de uma atualização não pode ser anterior à abertura nem ao último evento do chamado.
 
-Dashboard (parte C)
+## Dashboard (parte C)
 
 O módulo src/dashboard.py monta o painel a partir dos chamados já validados por dados.py. Ele só lê os dados; nada é gravado nos CSV. No menu principal, a opção 8 — Painel de indicadores mostra o painel geral e a opção 9 — Visão por bloco mostra o painel de um bloco escolhido por número. As duas chamam src/indicadores.py, que repassa os dados para o dashboard.py. O painel também abre sozinho com python src/dashboard.py.
 
@@ -197,56 +197,64 @@ Se o menu enviar o histórico (exibir_painel_indicadores(chamados, historico)), 
 
 Neste condomínio, cada bloco corresponde a uma torre. O nome do bloco é padronizado só para agrupar (bloco  a e Bloco A entram no mesmo grupo); o valor gravado não muda.
 
-Seções do painel geral
-Chamados por status: quantidade, proporção e barra de texto.
-Chamados por categoria: mesmo formato.
-Matriz categoria × status (lista de listas): linha = categoria, coluna = status, com totais.
-Matriz bloco/torre × status: quantos chamados cada torre tem em cada situação.
-Hierarquia bloco/torre → categoria → chamados: dicionário de dicionários de listas, exibido em árvore com protocolo, área, status e prioridade.
-Indicadores, com fórmula e dados de origem na tela.
-Últimas atualizações: o histórico é usado como pilha; uma cópia é desempilhada com pop() para mostrar os 5 eventos mais recentes sem apagar o original.
-Conclusão: frases geradas por regras simples a partir dos números.
+### Seções do painel geral
+
+- Chamados por status: quantidade, proporção e barra de texto.
+- Chamados por categoria: mesmo formato.
+- Matriz categoria × status (lista de listas): linha = categoria, coluna = status, com totais.
+- Matriz bloco/torre × status: quantos chamados cada torre tem em cada situação.
+- Hierarquia bloco/torre → categoria → chamados: dicionário de dicionários de listas, exibido em árvore com protocolo, área, status e prioridade.
+- Indicadores, com fórmula e dados de origem na tela.
+- Últimas atualizações: o histórico é usado como pilha; uma cópia é desempilhada com pop() para mostrar os 5 eventos mais recentes sem apagar o original.
+- Conclusão: frases geradas por regras simples a partir dos números.
 
 O painel por bloco/torre repete status, categoria, chamados, indicadores e últimas atualizações filtrados para um bloco.
 
-Estruturas de dados
-Estrutura	Uso no dashboard	Por quê
-Lista	chamados e historico percorridos com for	Guarda todos os registros na ordem de cadastro
-Dicionário	contar_por devolve {valor: quantidade}	Acesso direto ao contador de cada categoria/status
-Matriz (lista de listas)	categoria × status e bloco × status	Cruza duas informações numa tabela; somar linha ou coluna dá os totais
-Hierarquia (dict → dict → list)	montar_hierarquia	Organiza do geral (torre) ao específico (chamado), como o condomínio é percorrido
-Pilha	ultimos_eventos	O último evento empilhado é o mais recente; pop() lê do topo
-Indicadores e fórmulas
+### Estruturas de dados
+
+| Estrutura | Uso no dashboard | Por quê |
+|---|---|---|
+| Lista | chamados e historico percorridos com for | Guarda todos os registros na ordem de cadastro |
+| Dicionário | contar_por devolve {valor: quantidade} | Acesso direto ao contador de cada categoria/status |
+| Matriz (lista de listas) | categoria × status e bloco × status | Cruza duas informações numa tabela; somar linha ou coluna dá os totais |
+| Hierarquia (dict → dict → list) | montar_hierarquia | Organiza do geral (torre) ao específico (chamado), como o condomínio é percorrido |
+| Pilha | ultimos_eventos | O último evento empilhado é o mais recente; pop() lê do topo |
+
+### Indicadores e fórmulas
 
 O dia de referência ("hoje" simulado) é o maior dia que aparece em aberturas, fechamentos ou eventos. Na base entregue, é o dia 18 (abertura do CH-014).
 
-Indicador	Fórmula	Base entregue
-Proporção por categoria/status	quantidade ÷ total × 100	ex.: 5 abertos ÷ 13 = 38,5%
-Taxa de resolução	resolvidos ÷ total × 100	3 ÷ 13 = 23,1%
-Tempo médio de resolução	soma(fechamento − abertura) ÷ resolvidos	(2 + 3 + 3) ÷ 3 = 2,7 dias
-Resolvidos no prazo	resolução ≤ PRAZOS[prioridade]	3 de 3
-Espera média das pendências	soma(referência − abertura) ÷ pendentes	104 ÷ 10 = 10,4 dias
-Pendências fora do prazo	pendente e espera > PRAZOS[prioridade]	9 de 10 (6 urgentes ou altas)
+| Indicador | Fórmula | Base entregue |
+|---|---|---|
+| Proporção por categoria/status | quantidade ÷ total × 100 | ex.: 5 abertos ÷ 13 = 38,5% |
+| Taxa de resolução | resolvidos ÷ total × 100 | 3 ÷ 13 = 23,1% |
+| Tempo médio de resolução | soma(fechamento − abertura) ÷ resolvidos | (2 + 3 + 3) ÷ 3 = 2,7 dias |
+| Resolvidos no prazo | resolução ≤ PRAZOS[prioridade] | 3 de 3 |
+| Espera média das pendências | soma(referência − abertura) ÷ pendentes | 104 ÷ 10 = 10,4 dias |
+| Pendências fora do prazo | pendente e espera > PRAZOS[prioridade] | 9 de 10 (6 urgentes ou altas) |
 
 Distribuição por torre na base entregue:
 
-Bloco/torre	Aberto	Em atendimento	Aguardando terceiro	Resolvido	Total
-Bloco A	2	0	1	2	5
-Bloco B	2	1	0	1	4
-Bloco C	1	2	1	0	4
+| Bloco/torre | Aberto | Em atendimento | Aguardando terceiro | Resolvido | Total |
+|---|---|---|---|---|---|
+| Bloco A | 2 | 0 | 1 | 2 | 5 |
+| Bloco B | 2 | 1 | 0 | 1 | 4 |
+| Bloco C | 1 | 2 | 1 | 0 | 4 |
 
 As porcentagens são arredondadas para uma casa decimal, então a soma exibida pode variar em 0,1 ponto.
 
-Expressões booleanas do dashboard
-espera > prazo and (prioridade == "urgente" or prioridade == "alta"): conta um atraso crítico só quando o chamado passou do prazo e é urgente ou alto.
-not chamado["status"] == "resolvido": define pendente como tudo que não está resolvido.
-if categoria in CATEGORIAS and status in STATUS: só soma na matriz valores padronizados, protegendo os índices.
-if total == 0 / if not chamados: evita divisão por zero e mostra aviso quando não há chamados.
-Interpretação da base simulada
+### Expressões booleanas do dashboard
+
+- `espera > prazo and (prioridade == "urgente" or prioridade == "alta")`: conta um atraso crítico só quando o chamado passou do prazo e é urgente ou alto.
+- `not chamado["status"] == "resolvido"`: define pendente como tudo que não está resolvido.
+- `if categoria in CATEGORIAS and status in STATUS`: só soma na matriz valores padronizados, protegendo os índices.
+- `if total == 0 / if not chamados`: evita divisão por zero e mostra aviso quando não há chamados.
+
+### Interpretação da base simulada
 
 Iluminação é a categoria mais frequente (4 chamados). O Bloco C concentra mais pendências (4 de 4 chamados sem solução). Só 23,1% dos chamados foram resolvidos, e 9 das 10 pendências passaram do prazo, incluindo 3 urgentes. Os poucos chamados resolvidos fecharam rápido (2,7 dias em média, todos no prazo), o que indica que o gargalo está em iniciar o atendimento, não em concluí-lo. Como os dados são fictícios, essas conclusões servem para demonstrar o raciocínio, não para avaliar um condomínio real.
 
-Acessibilidade
+### Acessibilidade
 
 O painel não depende de cores: toda barra vem acompanhada do número e da porcentagem, as abreviações das matrizes têm legenda, e a escolha do bloco é feita por número. Nenhum dado pessoal é exibido, só bloco e área comum.
 
