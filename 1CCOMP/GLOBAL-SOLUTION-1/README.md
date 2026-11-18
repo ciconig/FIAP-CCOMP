@@ -18,7 +18,15 @@ Na inicialização, o programa avisa que `CH-013` está sem categoria e mostra a
 
 - **1 — Listar chamados:** exibe protocolo, categoria, prioridade, bloco, área comum e status. A prioridade `URGENTE` aparece em maiúsculas.
 - **2 — Abrir chamado:** permite escolher categoria e prioridade por número e pede descrição, bloco, área comum e dia simulado. Entradas inválidas são solicitadas novamente. O chamado começa como `aberto`, é gravado no CSV e recebe um protocolo sequencial.
+- **3 — Consultar protocolo:** mostra todos os campos de um chamado ou avisa que ele não foi encontrado.
+- **4 — Filtrar:** por categoria, por status ou pelos dois; valores fora da lista são recusados.
+- **5 — Atender próximo da fila:** retira o primeiro chamado `aberto` da fila de triagem (ordem de registro) e o coloca `em_atendimento`.
+- **6 — Atualizar status:** mostra os próximos status permitidos, bloqueia transições proibidas e registra a mudança no histórico.
+- **7 — Últimas atualizações:** os 5 eventos mais recentes, do topo da pilha para baixo.
+- **8 — Painel de indicadores** e **9 — Visão por bloco:** ver a seção do dashboard.
 - **0 — Sair.**
+
+Mudanças de status (opções 5 e 6) ficam na memória durante a execução e aparecem no painel e nas últimas atualizações; só os cadastros novos são gravados no CSV.
 
 Para testar o cadastro, uma descrição possível é “Luz apagada no hall”, local “Bloco A / Hall”, dia `18`. Na base entregue, o próximo protocolo é `CH-015`, pois `CH-014` já existe. Os cadastros persistem entre execuções; faça uma cópia dos CSV se quiser repetir a demonstração com a mesma base.
 
@@ -31,8 +39,11 @@ GLOBAL-SOLUTION-1/
 │   └── historico.csv
 ├── src/
 │   ├── dados.py           # constantes, validação, leitura e gravação
-│   └── sistema.py         # menu demonstrativo de cadastro e listagem
-├── tests/test_dados.py    # integridade dos dados e fluxo de cadastro
+│   ├── chamados.py        # consulta, filtro, fila de triagem, status e histórico
+│   ├── indicadores.py     # opções 8 e 9 do menu
+│   ├── dashboard.py       # painel, matrizes, hierarquia e indicadores
+│   └── sistema.py         # menu principal (ponto de entrada)
+├── tests/                 # test_dados.py, test_chamados.py, test_dashboard.py
 └── docs/uso_ia.md
 ```
 
@@ -65,7 +76,7 @@ Os dias são simulados: `1`, `2`, `3` etc., sem correspondência obrigatória co
 | `aguardando_terceiro` | Depende de empresa ou peça |
 | `resolvido` | Atendimento concluído e fechamento informado |
 
-As constantes `PRAZOS` e `TRANSICOES` ficam disponíveis em `dados.py` para a integração do grupo. Os prazos previstos são `urgente: 1`, `alta: 3` e `normal: 7` dias. A prioridade não altera a ordem de chegada da futura fila.
+As constantes `PRAZOS` e `TRANSICOES` ficam disponíveis em `dados.py` para a integração do grupo. Os prazos previstos são `urgente: 1`, `alta: 3` e `normal: 7` dias. A prioridade não altera a ordem de chegada da fila de triagem.
 
 ## Cobertura dos dados iniciais
 
@@ -98,7 +109,7 @@ As transições permitidas são:
 
 O último status de cada histórico deve coincidir com `chamados.csv`. Para resolvidos, o dia do último evento deve ser o dia de fechamento. Chamados ainda abertos podem não ter eventos. Uma inconsistência no histórico bloqueia a carga inicial com mensagem explicativa, pois descartar um evento isolado poderia quebrar a sequência.
 
-O arquivo agrupa eventos por protocolo, em ordem cronológica dentro de cada chamado. `carregar_historico` retorna a lista ordenada por dia para que o último item represente o evento mais recente na futura pilha; empates mantêm a ordem do arquivo.
+O arquivo agrupa eventos por protocolo, em ordem cronológica dentro de cada chamado. `carregar_historico` retorna a lista ordenada por dia para que o último item represente o evento mais recente na pilha; empates mantêm a ordem do arquivo.
 
 ## Validações e regras lógicas
 
@@ -120,7 +131,7 @@ O dicionário `TRANSICOES` representa a expressão booleana prevista no plano:
 ) or (atual == "aguardando_terceiro" and novo == "em_atendimento")
 ```
 
-Cada trecho permite um dos caminhos descritos acima. Se nenhum for verdadeiro, a transição é inválida. Nesta entrega, a regra é aplicada aos eventos importados; a atualização interativa cabe à integração de chamados.
+Cada trecho permite um dos caminhos descritos acima. Se nenhum for verdadeiro, a transição é inválida. A mesma regra vale na carga do histórico e na opção 6 do menu, que lê `TRANSICOES` de `dados.py`.
 
 Erros de dados comuns, como a categoria ausente em `CH-013`, geram aviso e exclusão apenas da lista em memória. Cabeçalho incompatível, quantidade incorreta de colunas, CSV malformado, codificação inválida e protocolos duplicados ou inválidos bloqueiam a carga. Comparar também o número do protocolo impede tratar `CH-001` e `CH-0001` como identificadores diferentes.
 
@@ -148,9 +159,26 @@ historico = carregar_historico(chamados)
 por_protocolo = {chamado["protocolo"]: chamado for chamado in chamados}
 ```
 
-A lista permite percorrer todos os chamados; o conjunto de números impede reutilizar protocolos. O dicionário do exemplo permite acesso por protocolo, e a lista de eventos está preparada para ser usada como pilha pelo módulo de chamados.
+A lista permite percorrer todos os chamados; o conjunto de números impede reutilizar protocolos. O dicionário permite acesso por protocolo, e a lista de eventos é usada como pilha.
 
-Busca, filtros, fila de triagem, atualização interativa e gravação de mudanças no histórico ainda cabem à parte B. Matriz, hierarquia e indicadores cabem à parte C. O menu atual demonstra cadastro e listagem; a carga do histórico já está integrada e validada.
+## Chamados (parte B)
+
+`src/chamados.py` recebe as estruturas montadas em `sistema.py`:
+
+| Estrutura | Variável | Uso |
+|---|---|---|
+| Lista | `chamados` | listar e filtrar, percorrendo com `for` |
+| Dicionário | `por_protocolo` | consultar e atualizar sem percorrer a lista |
+| Fila | `fila_triagem` | chamados `aberto` na ordem de registro; `pop(0)` atende o primeiro e novos cadastros entram no fim com `append` |
+| Pilha | `historico` | cada mudança é empilhada com `append`; as últimas atualizações desempilham uma cópia com `pop()` |
+
+Regras aplicadas no menu:
+
+- `(categoria and categoria not in CATEGORIAS) or (status and status not in STATUS)` recusa um filtro com valor fora da lista; campo vazio significa "todos".
+- `(not categoria or chamado["categoria"] == categoria) and (not status or chamado["status"] == status)` seleciona os chamados do filtro.
+- `novo not in TRANSICOES[atual]` bloqueia transições proibidas, como `aberto` direto para `resolvido`.
+- O dia de uma atualização não pode ser anterior à abertura nem ao último evento do chamado.
+
 Dashboard (parte C)
 
 O módulo src/dashboard.py monta o painel a partir dos chamados já validados por dados.py. Ele só lê os dados; nada é gravado nos CSV. No menu principal, a opção 8 — Painel de indicadores mostra o painel geral e a opção 9 — Visão por bloco mostra o painel de um bloco escolhido por número. As duas chamam src/indicadores.py, que repassa os dados para o dashboard.py. O painel também abre sozinho com python src/dashboard.py.
@@ -220,6 +248,6 @@ Na pasta do projeto:
 python -B -m unittest discover -s tests -v
 ```
 
-Os oito testes cobrem os mínimos do enunciado na base entregue, campos obrigatórios, valores e datas inválidos, estrutura do CSV, reserva de protocolos, coerência do histórico, preservação dos dados na gravação e cadastro de dois chamados consecutivos pelo menu. Os testes de escrita usam arquivos temporários e não alteram a base entregue.
+Os testes de `test_dados.py` cobrem os mínimos do enunciado na base entregue, campos obrigatórios, valores e datas inválidos, estrutura do CSV, reserva de protocolos, coerência do histórico, preservação dos dados na gravação e cadastro de dois chamados consecutivos pelo menu. Os testes de escrita usam arquivos temporários e não alteram a base entregue. `test_chamados.py` cobre a ordem da fila, transições válidas e bloqueadas, saída da fila, consulta, filtro e a pilha de atualizações; `test_dashboard.py` cobre o painel.
 
 O registro da assistência por IA está em [docs/uso_ia.md](docs/uso_ia.md).
