@@ -1,0 +1,15 @@
+protocolo,categoria,prioridade,descricao,bloco,area,dia_abertura,status,dia_fechamento
+CH-001,iluminacao,alta,Lâmpada apagada na garagem,Bloco A,Garagem,1,resolvido,3
+CH-002,acessibilidade,urgente,Corrimão solto na rampa,Bloco B,Rampa de acesso,2,em_atendimento,
+CH-003,limpeza,normal,Lixeira transbordando,Bloco A,Área de descarte,2,resolvido,5
+CH-004,conservacao,alta,Portão da garagem não fecha,Bloco C,Garagem,3,aguardando_terceiro,
+CH-005,iluminacao,normal,Luz piscando no corredor,Bloco B,Corredor comum,4,aberto,
+CH-006,acessibilidade,alta,Piso tátil danificado,Bloco A,Entrada comum,5,aberto,
+CH-007,limpeza,normal,Folhas acumuladas na piscina,Bloco C,Área da piscina,6,em_atendimento,
+CH-008,conservacao,normal,Banco quebrado no jardim,Bloco B,Jardim,7,resolvido,10
+CH-009,iluminacao,urgente,Escada comum sem iluminação,Bloco C,Escada comum,8,em_atendimento,
+CH-010,acessibilidade,alta,Elevador com botão inacessível,Bloco A,Elevador,9,aguardando_terceiro,
+CH-011,limpeza,normal,Sujeira no salão de festas,Bloco B,Salão de festas,10,aberto,
+CH-012,conservacao,alta,Infiltração no salão,Bloco C,Salão de festas,11,aberto,
+CH-013,,normal,Lâmpada apagada no jardim,Bloco A,Jardim,12,aberto,
+CH-014,iluminacao,urgente,A luz do hall queimou,Bloco A,Hall,18,aberto,

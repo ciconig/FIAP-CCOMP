@@ -1,0 +1,14 @@
+protocolo,dia_evento,status_anterior,status_novo,observacao
+CH-001,2,aberto,em_atendimento,Administração iniciou a verificação
+CH-001,3,em_atendimento,resolvido,Lâmpada substituída
+CH-002,3,aberto,em_atendimento,Administração iniciou a verificação
+CH-003,3,aberto,em_atendimento,Limpeza iniciada
+CH-003,5,em_atendimento,resolvido,Área limpa
+CH-004,4,aberto,em_atendimento,Portão inspecionado
+CH-004,5,em_atendimento,aguardando_terceiro,Manutenção especializada solicitada
+CH-007,7,aberto,em_atendimento,Equipe de limpeza acionada
+CH-008,8,aberto,em_atendimento,Banco inspecionado
+CH-008,10,em_atendimento,resolvido,Banco reparado
+CH-009,9,aberto,em_atendimento,Administração iniciou a verificação
+CH-010,10,aberto,em_atendimento,Elevador inspecionado
+CH-010,11,em_atendimento,aguardando_terceiro,Assistência especializada solicitada
