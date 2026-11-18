@@ -1,6 +1,16 @@
-# Cadastro e dados iniciais — Global Solution
+# Help desk de condomínio — Global Solution
 
-Help desk de condomínio para registrar problemas nas áreas comuns. Esta entrega cobre cadastro, leitura e validação dos dados iniciais, conforme a divisão do plano. Usa apenas a biblioteca padrão do Python 3.
+## Equipe
+
+| Integrante | RM |
+|---|---|
+| Guilherme Augusto Ciconi Torquato | RM574912 |
+| Jessica Marques Nazareth da Silva | RM575170 |
+| Julio Cesar Victorio Fernandes | RM574452 |
+| Nicolas Jordão Souza | RM575020 |
+| Matheus Luiz Neiva Rossilho Moysés | RM574836 |
+
+Help desk de condomínio para registrar, acompanhar e analisar problemas nas áreas comuns. Usa apenas a biblioteca padrão do Python 3.
 
 Os registros são fictícios. Informe apenas bloco e área comum: não registre nome, apartamento ou outro dado pessoal do morador.
 
