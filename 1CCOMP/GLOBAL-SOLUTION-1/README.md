@@ -1,6 +1,6 @@
 # Help desk de condomínio — Global Solution
 
-## Equipe
+## Equipe: Maximi Tech
 
 | Integrante | RM |
 |---|---|
