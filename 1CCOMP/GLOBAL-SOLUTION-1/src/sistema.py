@@ -1,8 +1,21 @@
-"""Cadastro simples de chamados de áreas comuns, usando apenas Python padrão."""
+"""Menu do help desk do condomínio, usando apenas Python padrão."""
+from chamados import (
+    atender_proximo_fila, atualizar_status, consultar_protocolo,
+    exibir_ultimas_atualizacoes, filtrar_chamados, listar_chamados, montar_fila,
+)
 from dados import (
     CATEGORIAS, PRIORIDADES, carregar, carregar_historico, dia_simulado,
     salvar_novo_chamado,
 )
+from indicadores import exibir_painel_indicadores, exibir_visao_por_bloco
+
+MENU = """
+=== HELP DESK DO CONDOMÍNIO ===
+1 - Listar chamados          6 - Atualizar status
+2 - Abrir chamado            7 - Últimas atualizações
+3 - Consultar protocolo      8 - Painel de indicadores
+4 - Filtrar                  9 - Visão por bloco
+5 - Atender próximo da fila  0 - Sair"""
 
 
 def escolher(rotulo, opcoes):
@@ -47,17 +60,6 @@ def abrir_chamado(numeros):
     return chamado
 
 
-def listar(chamados):
-    if not chamados:
-        print("Nenhum chamado válido cadastrado.")
-        return
-    print("\nPROTOCOLO | CATEGORIA | PRIORIDADE | BLOCO / ÁREA | STATUS")
-    for chamado in chamados:
-        prioridade = chamado["prioridade"].upper() if chamado["prioridade"] == "urgente" else chamado["prioridade"]
-        print(f"{chamado['protocolo']} | {chamado['categoria']} | "
-              f"{prioridade} | {chamado['bloco']} / {chamado['area']} | {chamado['status']}")
-
-
 def main():
     try:
         chamados, numeros = carregar()
@@ -65,25 +67,44 @@ def main():
     except (ValueError, OSError) as erro:
         print(f"Erro ao carregar os dados iniciais: {erro}")
         return
-    print(f"Base carregada: {len(chamados)} chamados válidos e {len(historico)} eventos de histórico.")
+    # Lista = todos os chamados; dicionário = acesso por protocolo;
+    # fila = abertos por ordem de registro; histórico = pilha de eventos.
+    por_protocolo = {chamado["protocolo"]: chamado for chamado in chamados}
+    fila_triagem = montar_fila(chamados)
+    print(f"Base carregada: {len(chamados)} chamados válidos, {len(historico)} eventos de "
+          f"histórico e {len(fila_triagem)} na fila de triagem.")
     while True:
-        print("\n=== HELP DESK DO CONDOMÍNIO ===")
-        print("1 - Listar chamados\n2 - Abrir chamado\n0 - Sair")
+        print(MENU)
         opcao = input("Escolha: ").strip()
         if opcao == "0":
             print("Até logo!")
             break
-        elif opcao == "1" or opcao == "2":
-            try:
-                if opcao == "1":
-                    listar(chamados)
-                else:
-                    novo = abrir_chamado(numeros)
-                    chamados.append(novo)
-            except (ValueError, OSError) as erro:
-                print(f"Erro ao acessar os dados: {erro}")
-        else:
-            print("Opção inválida. Tente novamente.")
+        try:
+            if opcao == "1":
+                listar_chamados(chamados)
+            elif opcao == "2":
+                novo = abrir_chamado(numeros)
+                chamados.append(novo)
+                por_protocolo[novo["protocolo"]] = novo
+                fila_triagem.append(novo)
+            elif opcao == "3":
+                consultar_protocolo(por_protocolo)
+            elif opcao == "4":
+                filtrar_chamados(chamados)
+            elif opcao == "5":
+                atender_proximo_fila(fila_triagem, historico)
+            elif opcao == "6":
+                atualizar_status(por_protocolo, fila_triagem, historico)
+            elif opcao == "7":
+                exibir_ultimas_atualizacoes(historico)
+            elif opcao == "8":
+                exibir_painel_indicadores(chamados, historico)
+            elif opcao == "9":
+                exibir_visao_por_bloco(chamados, historico)
+            else:
+                print("Opção inválida. Tente novamente.")
+        except (ValueError, OSError) as erro:
+            print(f"Erro ao acessar os dados: {erro}")
 
 
 if __name__ == "__main__":
