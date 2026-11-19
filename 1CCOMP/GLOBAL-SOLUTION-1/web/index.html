@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colônia Aurora · Central de Chamados</title>
+<style>
+  :root {
+    --fundo: #120c0a;
+    --painel: #1c1310;
+    --painel-2: #241815;
+    --borda: #3a2620;
+    --texto: #f3e9e4;
+    --suave: #b9a59c;
+    --marte: #e8743b;
+    --marte-forte: #ff8a4c;
+    --aberto: #ef6a5e;
+    --em_atendimento: #f2b84b;
+    --aguardando_terceiro: #c49bff;
+    --resolvido: #5fd391;
+    --raio: 10px;
+    --mono: ui-monospace, "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--fundo); color: var(--texto);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background-image: radial-gradient(1200px 500px at 85% -10%, #3a1a0e 0%, transparent 60%);
+    min-height: 100vh;
+  }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--marte-forte); outline-offset: 2px; }
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+
+  header { padding: 28px 0 18px; border-bottom: 1px solid var(--borda); }
+  .marca { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .planeta { width: 42px; height: 42px; border-radius: 50%; flex: none;
+    background: radial-gradient(circle at 35% 30%, #ffb07a, #c4501f 55%, #6b230b); box-shadow: 0 0 24px #e8743b55; }
+  h1 { margin: 0; font-size: 22px; letter-spacing: .04em; }
+  .sub { color: var(--suave); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+  .sol { margin-left: auto; font-family: var(--mono); color: var(--marte-forte); font-size: 13px;
+    border: 1px solid var(--borda); padding: 4px 10px; border-radius: 999px; }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 18px 0; }
+  .kpi { background: var(--painel); border: 1px solid var(--borda); border-radius: var(--raio); padding: 12px 14px; }
+  .kpi b { display: block; font-size: 26px; font-family: var(--mono); }
+  .kpi span { color: var(--suave); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+
+  nav { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--borda); margin-bottom: 18px; }
+  nav button { background: none; border: 0; padding: 10px 14px; color: var(--suave); cursor: pointer;
+    border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  nav button[aria-selected="true"] { color: var(--texto); border-color: var(--marte); }
+  nav button:hover { color: var(--texto); }
+  nav .contador { font-family: var(--mono); font-size: 12px; background: var(--painel-2); padding: 1px 6px; border-radius: 999px; margin-left: 4px; }
+
+  section[hidden] { display: none; }
+  .cartao { background: var(--painel); border: 1px solid var(--borda); border-radius: var(--raio); padding: 16px; margin-bottom: 14px; }
+  .cartao h2 { margin: 0 0 12px; font-size: 15px; letter-spacing: .05em; text-transform: uppercase; color: var(--marte-forte); }
+  .cartao h3 { margin: 14px 0 6px; font-size: 14px; }
+  .dica { color: var(--suave); font-size: 13px; margin: 0 0 12px; }
+
+  .filtros { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  label { display: grid; gap: 4px; font-size: 13px; color: var(--suave); }
+  input, select, textarea { background: var(--fundo); border: 1px solid var(--borda); border-radius: 8px; padding: 8px 10px; min-width: 0; }
+  textarea { resize: vertical; min-height: 60px; }
+  .grade-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .grade-form .largo { grid-column: 1 / -1; }
+
+  .botao { background: var(--marte); color: #1a0d07; border: 0; border-radius: 8px; padding: 9px 16px; font-weight: 600; cursor: pointer; }
+  .botao:hover { background: var(--marte-forte); }
+  .botao.secundario { background: none; color: var(--texto); border: 1px solid var(--borda); font-weight: 500; }
+  .botao:disabled { opacity: .4; cursor: not-allowed; }
+
+  .tabela-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--borda); white-space: nowrap; }
+  th { color: var(--suave); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+  td.num, th.num { text-align: right; font-family: var(--mono); }
+  tbody tr.clicavel { cursor: pointer; }
+  tbody tr.clicavel:hover { background: var(--painel-2); }
+  .mono { font-family: var(--mono); }
+
+  .status { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+  .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .s-aberto { color: var(--aberto); } .s-em_atendimento { color: var(--em_atendimento); }
+  .s-aguardando_terceiro { color: var(--aguardando_terceiro); } .s-resolvido { color: var(--resolvido); }
+  .urgente { color: var(--aberto); font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: .05em; }
+
+  .alerta { border-left: 3px solid var(--marte); background: var(--painel-2); padding: 10px 12px; border-radius: 6px; font-size: 14px; margin-bottom: 12px; }
+  .erros { color: var(--aberto); margin: 8px 0 0; padding-left: 18px; font-size: 14px; }
+
+  .layout-detalhe { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; align-items: start; }
+  .layout-detalhe > *, .duas-colunas > * { min-width: 0; }
+  @media (max-width: 860px) { .layout-detalhe { grid-template-columns: 1fr; } .sol { margin-left: 0; } }
+  dl.campos { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 0; font-size: 14px; }
+  dl.campos dt { color: var(--suave); }
+  dl.campos dd { margin: 0; }
+
+  .linha-tempo { list-style: none; margin: 0; padding: 0; }
+  .linha-tempo li { position: relative; padding: 0 0 12px 18px; border-left: 1px solid var(--borda); margin-left: 6px; font-size: 14px; }
+  .linha-tempo li::before { content: ""; position: absolute; left: -5px; top: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--marte); }
+  .linha-tempo .quando { color: var(--suave); font-family: var(--mono); font-size: 12px; }
+  .topo { font-size: 11px; font-family: var(--mono); color: #1a0d07; background: var(--marte); padding: 0 6px; border-radius: 4px; margin-left: 6px; }
+
+  .fila { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 8px; }
+  .fila li { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: center;
+    background: var(--painel-2); border: 1px solid var(--borda); border-radius: 8px; padding: 10px 12px; }
+  .fila li:first-child { border-color: var(--marte); }
+  .fila .pos { font-family: var(--mono); color: var(--suave); text-align: center; }
+  .fila li:first-child .pos { color: var(--marte-forte); font-weight: 700; }
+
+  .barras { display: grid; gap: 8px; }
+  .barra { display: grid; grid-template-columns: 150px 1fr 90px; gap: 10px; align-items: center; font-size: 14px; }
+  .trilho { height: 10px; background: var(--painel-2); border-radius: 999px; overflow: hidden; }
+  .preenchido { height: 100%; width: 0; border-radius: 999px; background: var(--marte); }
+  .barra .valor { text-align: right; font-family: var(--mono); font-size: 13px; }
+  @media (max-width: 560px) { .barra { grid-template-columns: 100px 1fr 76px; } }
+
+  .indicadores { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+  .indicador { background: var(--painel-2); border-radius: 8px; padding: 12px; }
+  .indicador b { font-size: 22px; font-family: var(--mono); display: block; }
+  .indicador .formula { color: var(--suave); font-family: var(--mono); font-size: 12px; }
+  .duas-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 860px) { .duas-colunas { grid-template-columns: 1fr; } }
+
+  details.arvore { margin: 6px 0; } details.arvore summary { cursor: pointer; font-weight: 600; }
+  details.arvore ul { margin: 4px 0 8px; padding-left: 22px; font-size: 14px; }
+  details.arvore details { margin-left: 14px; } details.arvore details summary { font-weight: 500; color: var(--suave); }
+
+  #aviso-vivo { position: fixed; right: 16px; bottom: 16px; max-width: min(380px, calc(100vw - 32px)); z-index: 10;
+    background: var(--painel-2); border: 1px solid var(--borda); border-left: 4px solid var(--resolvido);
+    border-radius: 8px; padding: 12px 14px; opacity: 0; pointer-events: none; }
+  #aviso-vivo.erro { border-left-color: var(--aberto); }
+  footer { color: var(--suave); font-size: 12px; padding: 24px 0 40px; border-top: 1px solid var(--borda); margin-top: 24px; }
+  footer code { font-family: var(--mono); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="container marca">
+    <div class="planeta" aria-hidden="true"></div>
+    <div>
+      <h1>COLÔNIA AURORA</h1>
+      <div class="sub">Habitat Marte-1 · Central de chamados do condomínio</div>
+    </div>
+    <div class="sol" id="sol" title="Dia simulado de referência: o maior dia registrado na base">Sol —</div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="kpis" id="kpis"></div>
+
+  <nav role="tablist" aria-label="Seções">
+    <button role="tab" data-aba="chamados" aria-selected="true">Chamados</button>
+    <button role="tab" data-aba="abrir" aria-selected="false">Abrir chamado</button>
+    <button role="tab" data-aba="fila" aria-selected="false">Fila de triagem <span class="contador" id="cont-fila">0</span></button>
+    <button role="tab" data-aba="historico" aria-selected="false">Histórico</button>
+    <button role="tab" data-aba="painel" aria-selected="false">Painel</button>
+  </nav>
+
+  <!-- CHAMADOS -->
+  <section id="aba-chamados" role="tabpanel">
+    <div id="avisos-carga"></div>
+    <div class="layout-detalhe">
+      <div class="cartao">
+        <h2>Chamados</h2>
+        <div class="filtros">
+          <label>Protocolo<input id="f-protocolo" placeholder="CH-001" autocomplete="off"></label>
+          <label>Categoria<select id="f-categoria"></select></label>
+          <label>Status<select id="f-status"></select></label>
+        </div>
+        <div class="tabela-wrap">
+          <table>
+            <thead><tr><th>Protocolo</th><th>Categoria</th><th>Prioridade</th><th>Bloco / área</th><th class="num">Abertura</th><th>Status</th></tr></thead>
+            <tbody id="lista"></tbody>
+          </table>
+        </div>
+        <p class="dica" id="lista-vazia" hidden>Nenhum chamado corresponde ao filtro.</p>
+      </div>
+      <div class="cartao" id="detalhe">
+        <h2>Detalhe</h2>
+        <p class="dica">Selecione um chamado na lista para ver os dados, o histórico e atualizar o status.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABRIR -->
+  <section id="aba-abrir" role="tabpanel" hidden>
+    <div class="cartao">
+      <h2>Abrir chamado</h2>
+      <p class="dica">Registre apenas o bloco e a área comum. Não informe nome nem apartamento do morador.</p>
+      <form id="form-abrir" novalidate>
+        <div class="grade-form">
+          <label>Categoria<select name="categoria"></select></label>
+          <label>Prioridade<select name="prioridade"></select></label>
+          <label>Bloco<input name="bloco" placeholder="Bloco A" list="lista-blocos" autocomplete="off"></label>
+          <label>Área comum<input name="area" placeholder="Estufa, câmara de despressurização…" autocomplete="off"></label>
+          <label>Dia de abertura (sol)<input name="dia_abertura" inputmode="numeric" placeholder="19"></label>
+          <label class="largo">Descrição<textarea name="descricao" placeholder="Descreva o problema em poucas palavras"></textarea></label>
+        </div>
+        <datalist id="lista-blocos"></datalist>
+        <ul class="erros" id="erros-abrir"></ul>
+        <p style="margin:12px 0 0"><button class="botao" type="submit">Registrar chamado</button>
+          <span class="dica" id="proximo-protocolo"></span></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- FILA -->
+  <section id="aba-fila" role="tabpanel" hidden>
+    <div class="cartao">
+      <h2>Fila de triagem</h2>
+      <p class="dica">Chamados abertos por ordem de chegada. A prioridade não fura a fila: o primeiro registrado é o primeiro atendido.</p>
+      <ol class="fila" id="fila"></ol>
+      <form id="form-fila" class="filtros" novalidate>
+        <label>Dia do atendimento (sol)<input name="dia" inputmode="numeric"></label>
+        <p style="align-self:end;margin:0"><button class="botao" type="submit" id="btn-atender">Atender próximo</button></p>
+      </form>
+      <ul class="erros" id="erros-fila"></ul>
+    </div>
+  </section>
+
+  <!-- HISTÓRICO -->
+  <section id="aba-historico" role="tabpanel" hidden>
+    <div class="cartao">
+      <h2>Últimas atualizações</h2>
+      <p class="dica">O histórico funciona como pilha: o evento mais recente fica no topo.</p>
+      <ul class="linha-tempo" id="historico"></ul>
+      <button class="botao secundario" id="btn-historico" type="button">Mostrar todos</button>
+    </div>
+  </section>
+
+  <!-- PAINEL -->
+  <section id="aba-painel" role="tabpanel" hidden>
+    <div class="filtros">
+      <label>Visão<select id="p-bloco"></select></label>
+    </div>
+    <div class="duas-colunas">
+      <div class="cartao"><h2>Por status</h2><div class="barras" id="p-status"></div></div>
+      <div class="cartao"><h2>Por categoria</h2><div class="barras" id="p-categoria"></div></div>
+    </div>
+    <div class="cartao"><h2>Indicadores</h2><div class="indicadores" id="p-indicadores"></div></div>
+    <div class="duas-colunas">
+      <div class="cartao"><h2>Matriz categoria × status</h2><div class="tabela-wrap" id="p-matriz-cat"></div></div>
+      <div class="cartao" id="cartao-matriz-bloco"><h2>Matriz bloco × status</h2><div class="tabela-wrap" id="p-matriz-bloco"></div></div>
+    </div>
+    <div class="cartao"><h2>Hierarquia bloco → categoria → chamados</h2><div id="p-hierarquia"></div></div>
+    <div class="cartao"><h2>Conclusão</h2><ul id="p-conclusao"></ul></div>
+  </section>
+</main>
+
+<footer class="container">
+  Dados simulados de <code>data/*.csv</code> (via <code>web/gerar_dados.py</code>). Alterações feitas aqui valem só nesta aba e somem ao recarregar.
+  O sistema avaliado é o Python: <code>python src/sistema.py</code>.
+</footer>
+
+<div id="aviso-vivo" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+<script src="dados.js"></script>
+<script src="regras.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

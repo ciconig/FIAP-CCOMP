@@ -55,6 +55,19 @@ As cores só reforçam o texto: status, prioridade e mensagens continuam escrito
 
 Para testar o cadastro, uma descrição possível é “Luz apagada no hall”, local “Bloco A / Hall”, dia `18`. Na base entregue, o próximo protocolo é `CH-015`, pois `CH-014` já existe. Os cadastros persistem entre execuções; faça uma cópia dos CSV se quiser repetir a demonstração com a mesma base.
 
+### Interface web (extra)
+
+`web/index.html` é uma versão visual do mesmo help desk, com o tema da Colônia Aurora: lista com filtros, detalhe com histórico e atualização de status, abertura de chamado, fila de triagem, últimas atualizações (pilha) e painel com indicadores, matrizes, hierarquia e conclusão. Animações com [anime.js](https://animejs.com/) 3.2.2; sem ele (offline) ou com "reduzir movimento" ativado no sistema, a página funciona igual, sem animação.
+
+As regras ficam em `web/regras.js`, uma tradução direta de `dados.py`, `chamados.py` e `dashboard.py` (mesmas categorias, prazos, transições, validação e fórmulas). Os dados vêm de `web/dados.js`, gerado a partir dos CSV:
+
+```bash
+python web/gerar_dados.py        # atualiza web/dados.js depois de mudar os CSV
+python -m http.server -d web     # depois abra http://localhost:8000
+```
+
+Abrir o `index.html` direto no navegador também funciona. As alterações feitas na página valem só naquela aba. **O sistema avaliado continua sendo o Python** (`python src/sistema.py`); a interface web é uma demonstração visual das mesmas regras.
+
 ## Organização da entrega
 
 ```text
@@ -69,6 +82,7 @@ GLOBAL-SOLUTION-1/
 │   ├── dashboard.py       # painel, matrizes, hierarquia e indicadores
 │   ├── visual.py          # banner, menu e cores do tema Colônia Aurora
 │   └── sistema.py         # menu principal (ponto de entrada)
+├── web/                   # interface web (index.html, app.js, regras.js, dados.js)
 ├── tests/                 # test_dados.py, test_chamados.py, test_dashboard.py
 └── docs/uso_ia.md
 ```
