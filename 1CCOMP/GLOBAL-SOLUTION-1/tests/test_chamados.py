@@ -1,5 +1,3 @@
-"""Fluxo do help desk em memória: fila, transições, histórico e consultas."""
-
 import io
 import sys
 import unittest
@@ -31,9 +29,9 @@ class TestChamados(unittest.TestCase):
         self.assertEqual([c["protocolo"] for c in fila],
                          ["CH-005", "CH-006", "CH-011", "CH-012", "CH-014"])
         chamado, _ = rodar(chamados.atender_proximo_fila, ["3", "12"], fila, historico)
-        self.assertEqual(chamado["protocolo"], "CH-005")  # o urgente CH-014 não fura a fila
+        self.assertEqual(chamado["protocolo"], "CH-005")
         self.assertEqual(chamado["status"], "em_atendimento")
-        self.assertEqual(historico[-1]["dia_evento"], "12")  # dia 3 é anterior à abertura (4)
+        self.assertEqual(historico[-1]["dia_evento"], "12")
 
     def test_transicao_valida_registra_e_fecha(self):
         _, por_protocolo, fila, historico = base()

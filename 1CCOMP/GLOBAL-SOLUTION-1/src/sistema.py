@@ -1,4 +1,3 @@
-"""Menu do help desk do condomínio, usando apenas Python padrão."""
 from chamados import (
     atender_proximo_fila, atualizar_status, consultar_protocolo,
     exibir_ultimas_atualizacoes, filtrar_chamados, listar_chamados, montar_fila,
@@ -8,14 +7,7 @@ from dados import (
     salvar_novo_chamado,
 )
 from indicadores import exibir_painel_indicadores, exibir_visao_por_bloco
-
-MENU = """
-=== HELP DESK DO CONDOMÍNIO ===
-1 - Listar chamados          6 - Atualizar status
-2 - Abrir chamado            7 - Últimas atualizações
-3 - Consultar protocolo      8 - Painel de indicadores
-4 - Filtrar                  9 - Visão por bloco
-5 - Atender próximo da fila  0 - Sair"""
+from visual import erro, mostrar_banner, mostrar_menu, ok
 
 
 def escolher(rotulo, opcoes):
@@ -27,7 +19,7 @@ def escolher(rotulo, opcoes):
         numero = dia_simulado(resposta)
         if numero is not None and 1 <= numero <= len(opcoes):
             return opcoes[numero - 1]
-        print("Opção inválida. Tente novamente.")
+        erro("Opção inválida. Tente novamente.")
 
 
 def texto_obrigatorio(rotulo):
@@ -35,7 +27,7 @@ def texto_obrigatorio(rotulo):
         valor = input(f"{rotulo}: ").strip()
         if valor:
             return valor
-        print("Campo obrigatório. Tente novamente.")
+        erro("Campo obrigatório. Tente novamente.")
 
 
 def abrir_chamado(numeros):
@@ -49,14 +41,14 @@ def abrir_chamado(numeros):
         dia = input("Dia simulado de abertura (inteiro positivo): ").strip()
         if dia_simulado(dia) is not None:
             break
-        print("Dia inválido. Informe um número inteiro maior que zero.")
+        erro("Dia inválido. Informe um número inteiro maior que zero.")
     numero = max(numeros, default=0) + 1
     chamado = {"protocolo": f"CH-{numero:03d}", "categoria": categoria,
                 "prioridade": prioridade, "descricao": descricao, "bloco": bloco,
                 "area": area, "dia_abertura": dia, "status": "aberto", "dia_fechamento": ""}
     chamado = salvar_novo_chamado(chamado)
     numeros.add(numero)
-    print(f"Chamado cadastrado! Protocolo: {chamado['protocolo']}")
+    ok(f"Chamado cadastrado! Protocolo: {chamado['protocolo']}")
     return chamado
 
 
@@ -64,20 +56,17 @@ def main():
     try:
         chamados, numeros = carregar()
         historico = carregar_historico(chamados)
-    except (ValueError, OSError) as erro:
-        print(f"Erro ao carregar os dados iniciais: {erro}")
+    except (ValueError, OSError) as falha:
+        erro(f"Erro ao carregar os dados iniciais: {falha}")
         return
-    # Lista = todos os chamados; dicionário = acesso por protocolo;
-    # fila = abertos por ordem de registro; histórico = pilha de eventos.
     por_protocolo = {chamado["protocolo"]: chamado for chamado in chamados}
     fila_triagem = montar_fila(chamados)
-    print(f"Base carregada: {len(chamados)} chamados válidos, {len(historico)} eventos de "
-          f"histórico e {len(fila_triagem)} na fila de triagem.")
+    mostrar_banner(chamados, historico, fila_triagem)
     while True:
-        print(MENU)
+        mostrar_menu()
         opcao = input("Escolha: ").strip()
         if opcao == "0":
-            print("Até logo!")
+            print("Encerrando a central de chamados. Até o próximo sol!")
             break
         try:
             if opcao == "1":
@@ -102,9 +91,9 @@ def main():
             elif opcao == "9":
                 exibir_visao_por_bloco(chamados, historico)
             else:
-                print("Opção inválida. Tente novamente.")
-        except (ValueError, OSError) as erro:
-            print(f"Erro ao acessar os dados: {erro}")
+                erro("Opção inválida. Tente novamente.")
+        except (ValueError, OSError) as falha:
+            erro(f"Erro ao acessar os dados: {falha}")
 
 
 if __name__ == "__main__":

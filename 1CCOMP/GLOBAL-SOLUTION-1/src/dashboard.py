@@ -13,6 +13,12 @@ except ImportError:
     STATUS = ["aberto", "em_atendimento", "aguardando_terceiro", "resolvido"]
     PRAZOS = {"urgente": 1, "alta": 3, "normal": 7}
 
+try:
+    from visual import cor
+except ImportError:
+    def cor(texto, nome):
+        return texto
+
 ROTULOS_CATEGORIA = {
     "iluminacao": "Iluminação",
     "acessibilidade": "Acessibilidade",
@@ -323,9 +329,9 @@ def gerar_conclusao(chamados, indicadores):
 # ---------------------------------------------------------------------------
 
 def titulo(texto):
-    print("\n" + LINHA)
-    print(texto.upper())
-    print(LINHA)
+    print("\n" + cor(LINHA, "marte"))
+    print(cor(texto.upper(), "titulo"))
+    print(cor(LINHA, "marte"))
 
 
 def tabela_contagem(rotulo, contagem, rotulos, total):

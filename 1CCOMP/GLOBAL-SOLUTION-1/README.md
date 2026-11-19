@@ -1,6 +1,6 @@
-# Help desk de condomínio — Global Solution
+# Nexcondo — help desk de condomínio (Global Solution)
 
-## Equipe: Maximi Tech
+## Equipe: NexoTech
 
 | Integrante | RM |
 |---|---|
@@ -10,7 +10,7 @@
 | Nicolas Jordão Souza | RM575020 |
 | Matheus Luiz Neiva Rossilho Moysés | RM574836 |
 
-Help desk de condomínio para registrar, acompanhar e analisar problemas nas áreas comuns. Usa apenas a biblioteca padrão do Python 3.
+O Nexcondo é um help desk de condomínio para registrar, acompanhar e analisar problemas nas áreas comuns. Usa apenas a biblioteca padrão do Python 3.
 
 Os registros são fictícios. Informe apenas bloco e área comum: não registre nome, apartamento ou outro dado pessoal do morador.
 
@@ -26,7 +26,7 @@ Os caminhos dos CSV são calculados a partir de `dados.py`, permitindo executar 
 
 Na inicialização, o programa avisa que `CH-013` está sem categoria e mostra a quantidade de chamados válidos e eventos de histórico carregados. O menu oferece:
 
-- **1 — Listar chamados:** exibe protocolo, categoria, prioridade, bloco, área comum e status. A prioridade `URGENTE` aparece em maiúsculas.
+- **1 — Listar chamados:** exibe protocolo, categoria, prioridade, bloco, área comum, dia de abertura e status. A prioridade `URGENTE` aparece em maiúsculas.
 - **2 — Abrir chamado:** permite escolher categoria e prioridade por número e pede descrição, bloco, área comum e dia simulado. Entradas inválidas são solicitadas novamente. O chamado começa como `aberto`, é gravado no CSV e recebe um protocolo sequencial.
 - **3 — Consultar protocolo:** mostra todos os campos de um chamado ou avisa que ele não foi encontrado.
 - **4 — Filtrar:** por categoria, por status ou pelos dois; valores fora da lista são recusados.
@@ -38,7 +38,35 @@ Na inicialização, o programa avisa que `CH-013` está sem categoria e mostra a
 
 Mudanças de status (opções 5 e 6) ficam na memória durante a execução e aparecem no painel e nas últimas atualizações; só os cadastros novos são gravados no CSV.
 
+### Interface: Colônia Aurora
+
+O terminal usa a narrativa do curso: o condomínio é o Habitat Marte-1, uma cúpula pressurizada da Colônia Aurora, e o menu é o painel de controle da colônia. O tema é só visual; dados, regras e indicadores são os mesmos. `src/visual.py` concentra o banner, o menu e as cores:
+
+| Elemento | Cor |
+|---|---|
+| Títulos, banner e bordas | laranja marciano |
+| `aberto` / `URGENTE` | vermelho |
+| `em_atendimento` | amarelo |
+| `aguardando_terceiro` | magenta |
+| `resolvido` e mensagens `[OK]` | verde |
+| Mensagens de erro `[!]` | vermelho |
+
+As cores só reforçam o texto: status, prioridade e mensagens continuam escritos por extenso, e os prefixos `[OK]` e `[!]` indicam sucesso ou erro sem depender de cor. Elas são desligadas automaticamente quando a saída não é um terminal e podem ser desativadas com a variável de ambiente `NO_COLOR`.
+
 Para testar o cadastro, uma descrição possível é “Luz apagada no hall”, local “Bloco A / Hall”, dia `18`. Na base entregue, o próximo protocolo é `CH-015`, pois `CH-014` já existe. Os cadastros persistem entre execuções; faça uma cópia dos CSV se quiser repetir a demonstração com a mesma base.
+
+### Interface web (extra)
+
+`web/index.html` é um painel de controle do mesmo help desk, com o tema da Colônia Aurora: alertas (fora do prazo, urgentes, fila), filtro por bloco, gráfico de status, barras por categoria, mapa bloco × status, fila de triagem com "atender próximo", últimas atualizações (pilha), indicadores e conclusão. Clicar no gráfico, nas barras ou no mapa filtra a lista de chamados; clicar num chamado abre o detalhe com histórico e os próximos status permitidos; "+ Novo chamado" abre o cadastro com a mesma validação do Python. Animações com [anime.js](https://animejs.com/) 3.2.2; sem ele (offline) ou com "reduzir movimento" ativado no sistema, a página funciona igual, sem animação.
+
+As regras ficam em `web/regras.js`, uma tradução direta de `dados.py`, `chamados.py` e `dashboard.py` (mesmas categorias, prazos, transições, validação e fórmulas). Os dados vêm de `web/dados.js`, gerado a partir dos CSV:
+
+```bash
+python web/gerar_dados.py        # atualiza web/dados.js depois de mudar os CSV
+python -m http.server -d web     # depois abra http://localhost:8000
+```
+
+Abrir o `index.html` direto no navegador também funciona. As alterações feitas na página valem só naquela aba. **O sistema avaliado continua sendo o Python** (`python src/sistema.py`); a interface web é uma demonstração visual das mesmas regras.
 
 ## Organização da entrega
 
@@ -52,7 +80,9 @@ GLOBAL-SOLUTION-1/
 │   ├── chamados.py        # consulta, filtro, fila de triagem, status e histórico
 │   ├── indicadores.py     # opções 8 e 9 do menu
 │   ├── dashboard.py       # painel, matrizes, hierarquia e indicadores
+│   ├── visual.py          # banner, menu e cores do tema Colônia Aurora
 │   └── sistema.py         # menu principal (ponto de entrada)
+├── web/                   # interface web (index.html, app.js, regras.js, dados.js)
 ├── tests/                 # test_dados.py, test_chamados.py, test_dashboard.py
 └── docs/uso_ia.md
 ```
