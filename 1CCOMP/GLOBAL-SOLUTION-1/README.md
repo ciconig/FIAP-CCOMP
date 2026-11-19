@@ -1,6 +1,8 @@
-# Nexcondo — help desk de condomínio (Global Solution)
+# Nexcondo: help desk de condomínio
 
-## Equipe: NexoTech
+Global Solution 2026.2 · Ciência da Computação ON · desafio CitizenTech, case *Neighborhood Action Dashboard*.
+
+## 1. Equipe: NexoTech
 
 | Integrante | RM |
 |---|---|
@@ -10,294 +12,360 @@
 | Nicolas Jordão Souza | RM575020 |
 | Matheus Luiz Neiva Rossilho Moysés | RM574836 |
 
-O Nexcondo é um help desk de condomínio para registrar, acompanhar e analisar problemas nas áreas comuns. Usa apenas a biblioteca padrão do Python 3.
+## 2. Comunidade, problema e público beneficiado
 
-Os registros são fictícios. Informe apenas bloco e área comum: não registre nome, apartamento ou outro dado pessoal do morador.
+**A comunidade simulada** é um condomínio com três blocos (A, B e C) e áreas comuns como garagem, hall, corredores, rampa de acesso, elevador, jardim, piscina e salão de festas. Na apresentação, o condomínio aparece como o Habitat Marte-1 da Colônia Aurora, a narrativa do curso. O tema é só visual: os dados, as regras e os indicadores são os de um condomínio comum.
 
-## Como executar
+**O problema.** As reclamações sobre as áreas comuns (lâmpada queimada, corrimão solto, lixeira transbordando, portão quebrado) costumam chegar por mensagem no grupo, recado na portaria ou conversa no elevador. Nada fica registrado num lugar só. Ninguém sabe o que já foi visto, o que está parado e o que é urgente, e o morador não consegue acompanhar o pedido que fez.
 
-Na pasta `1CCOMP/GLOBAL-SOLUTION-1`, execute:
+**A solução.** O Nexcondo funciona como um help desk:
 
-```bash
-python src/sistema.py
-```
+- o morador abre um chamado e recebe um protocolo (`CH-015`, por exemplo);
+- a administração atende os chamados pela fila de triagem e muda o status até a resolução;
+- cada mudança fica no histórico;
+- o painel mostra o que está pendente, o que passou do prazo e onde os problemas se concentram.
 
-Os caminhos dos CSV são calculados a partir de `dados.py`, permitindo executar o programa de outra pasta também. Mantenha os dois arquivos em `data`, junto de `src`.
+**Quem se beneficia:**
 
-Na inicialização, o programa avisa que `CH-013` está sem categoria e mostra a quantidade de chamados válidos e eventos de histórico carregados. O menu oferece:
+- **moradores:** registram o problema e acompanham pelo protocolo;
+- **síndico, zelador e administração:** veem a fila, as prioridades e os atrasos;
+- **pessoas com deficiência, idosos e quem tem mobilidade reduzida:** a acessibilidade é uma categoria própria, e uma rampa ou um elevador com defeito pode ser marcado como urgente, com prazo de 1 dia.
 
-- **1 — Listar chamados:** exibe protocolo, categoria, prioridade, bloco, área comum, dia de abertura e status. A prioridade `URGENTE` aparece em maiúsculas.
-- **2 — Abrir chamado:** permite escolher categoria e prioridade por número e pede descrição, bloco, área comum e dia simulado. Entradas inválidas são solicitadas novamente. O chamado começa como `aberto`, é gravado no CSV e recebe um protocolo sequencial.
-- **3 — Consultar protocolo:** mostra todos os campos de um chamado ou avisa que ele não foi encontrado.
-- **4 — Filtrar:** por categoria, por status ou pelos dois; valores fora da lista são recusados.
-- **5 — Atender próximo da fila:** retira o primeiro chamado `aberto` da fila de triagem (ordem de registro) e o coloca `em_atendimento`.
-- **6 — Atualizar status:** mostra os próximos status permitidos, bloqueia transições proibidas e registra a mudança no histórico.
-- **7 — Últimas atualizações:** os 5 eventos mais recentes, do topo da pilha para baixo.
-- **8 — Painel de indicadores** e **9 — Visão por bloco:** ver a seção do dashboard.
-- **10 — Abrir dashboard web:** exporta os dados desta sessão (inclusive cadastros e mudanças de status ainda não salvas) para `web/dados.js`, abre `web/index.html` no navegador e mostra o link no terminal, caso o navegador não abra sozinho.
-- **0 — Sair.**
+O projeto se relaciona com o **ODS 11**, meta 11.7 (espaços coletivos seguros, inclusivos e acessíveis), e com o **ODS 10**, meta 10.2 (inclusão de pessoas com deficiência e idosos).
 
-Mudanças de status (opções 5 e 6) ficam na memória durante a execução e aparecem no painel e nas últimas atualizações; só os cadastros novos são gravados no CSV.
+## 3. Estruturas de dados e justificativa
 
-### Interface: Colônia Aurora
+| Estrutura | Onde está | Para que serve | Por que essa estrutura |
+|---|---|---|---|
+| **Lista** | `chamados` (`sistema.py`) | guarda todos os chamados válidos; é percorrida para listar, filtrar e calcular indicadores | mantém a ordem de registro e permite percorrer tudo com `for` |
+| **Dicionário** | `por_protocolo` (`sistema.py`) | consulta e atualiza um chamado pelo protocolo | acesso direto pela chave, sem percorrer a lista |
+| **Fila** | `fila_triagem` (`chamados.py`) | chamados `aberto` ainda não examinados | o primeiro a chegar é o primeiro atendido: `append` no fim e `pop(0)` no início. A prioridade não fura a fila; ela define o prazo |
+| **Pilha** | `historico` (`chamados.py`, `dashboard.py`) | cada mudança de status é empilhada; "Últimas atualizações" lê do topo | o evento mais recente é sempre o último empilhado. A leitura usa `pop()` numa cópia, para não apagar o histórico |
+| **Hierarquia** | `montar_hierarquia` (`dashboard.py`) | bloco → categoria → chamados (dicionário de dicionários de listas) | segue o jeito como a administração percorre o condomínio: primeiro o bloco, depois o tipo de problema |
+| **Matriz** | `matriz_categoria_status` e `matriz_bloco_status` (`dashboard.py`) | lista de listas: linha = categoria (ou bloco), coluna = status | cruza duas informações numa tabela; somar uma linha ou uma coluna dá os totais |
+| **Conjunto** | `numeros` (`dados.py`) | números de protocolo já usados, inclusive o do registro rejeitado | impede repetir protocolo; a busca num conjunto é direta |
 
-O terminal usa a narrativa do curso: o condomínio é o Habitat Marte-1, uma cúpula pressurizada da Colônia Aurora, e o menu é o painel de controle da colônia. O tema é só visual; dados, regras e indicadores são os mesmos. `src/visual.py` concentra o banner, o menu e as cores:
+## 4. Regras lógicas
 
-| Elemento | Cor |
+### Cadastro e validação (`dados.py`)
+
+- **Campos obrigatórios:** protocolo, categoria, prioridade, descrição, bloco, área, dia de abertura e status. O `dia_fechamento` só é obrigatório quando o chamado está resolvido.
+- **Valores padronizados:**
+
+| Campo | Valores aceitos |
 |---|---|
-| Títulos, banner e bordas | laranja marciano |
-| `aberto` / `URGENTE` | vermelho |
-| `em_atendimento` | amarelo |
-| `aguardando_terceiro` | magenta |
-| `resolvido` e mensagens `[OK]` | verde |
-| Mensagens de erro `[!]` | vermelho |
+| Categoria | `iluminacao`, `acessibilidade`, `limpeza`, `conservacao` |
+| Prioridade | `urgente` (prazo de 1 dia), `alta` (3 dias), `normal` (7 dias) |
+| Status | `aberto`, `em_atendimento`, `aguardando_terceiro`, `resolvido` |
 
-As cores só reforçam o texto: status, prioridade e mensagens continuam escritos por extenso, e os prefixos `[OK]` e `[!]` indicam sucesso ou erro sem depender de cor. Elas são desligadas automaticamente quando a saída não é um terminal e podem ser desativadas com a variável de ambiente `NO_COLOR`.
-
-Para testar o cadastro, uma descrição possível é “Luz apagada no hall”, local “Bloco A / Hall”, dia `18`. Na base entregue, o próximo protocolo é `CH-015`, pois `CH-014` já existe. Os cadastros persistem entre execuções; faça uma cópia dos CSV se quiser repetir a demonstração com a mesma base.
-
-### Interface web (extra)
-
-`web/index.html` é um painel de controle do mesmo help desk, com o tema da Colônia Aurora: alertas (fora do prazo, urgentes, fila), filtro por bloco, gráfico de status, barras por categoria, mapa bloco × status, fila de triagem com "atender próximo", últimas atualizações (pilha), indicadores e conclusão. Clicar no gráfico, nas barras ou no mapa filtra a lista de chamados; clicar num chamado abre o detalhe com histórico e os próximos status permitidos; "+ Novo chamado" abre o cadastro com a mesma validação do Python. Animações com [anime.js](https://animejs.com/) 3.2.2; sem ele (offline) ou com "reduzir movimento" ativado no sistema, a página funciona igual, sem animação.
-
-As regras ficam em `web/regras.js`, uma tradução direta de `dados.py`, `chamados.py` e `dashboard.py` (mesmas categorias, prazos, transições, validação e fórmulas). Os dados vêm de `web/dados.js`. A forma mais simples de abrir é pela **opção 10 do menu**, que gera esse arquivo com o estado atual da sessão e abre o navegador. Também dá para gerar a partir dos CSV, sem abrir o menu:
-
-```bash
-python web/gerar_dados.py        # atualiza web/dados.js depois de mudar os CSV
-python -m http.server -d web     # depois abra http://localhost:8000
-```
-
-Abrir o `index.html` direto no navegador também funciona. A ligação é do terminal para a web: as alterações feitas na página valem só naquela aba e não voltam para o terminal; para atualizar a página, use a opção 10 de novo e recarregue. **O sistema avaliado continua sendo o Python** (`python src/sistema.py`); a interface web é uma demonstração visual das mesmas regras.
-
-## Organização da entrega
-
-```text
-GLOBAL-SOLUTION-1/
-├── data/
-│   ├── chamados.csv
-│   └── historico.csv
-├── src/
-│   ├── dados.py           # constantes, validação, leitura e gravação
-│   ├── chamados.py        # consulta, filtro, fila de triagem, status e histórico
-│   ├── indicadores.py     # opções 8 e 9 do menu
-│   ├── dashboard.py       # painel, matrizes, hierarquia e indicadores
-│   ├── visual.py          # banner, menu e cores do tema Colônia Aurora
-│   ├── painel_web.py      # opção 10: exporta a sessão e abre o dashboard web
-│   └── sistema.py         # menu principal (ponto de entrada)
-├── web/                   # interface web (index.html, app.js, regras.js, dados.js)
-├── tests/                 # test_dados.py, test_chamados.py, test_dashboard.py
-└── docs/uso_ia.md
-```
-
-## Formato dos chamados
-
-`data/chamados.csv` usa UTF-8, vírgula como separador e o cabeçalho abaixo, nessa ordem. A leitura aceita BOM e remove espaços nas extremidades dos campos. Campos com vírgulas, aspas ou quebras de linha são tratados pelo módulo `csv`.
-
-```csv
-protocolo,categoria,prioridade,descricao,bloco,area,dia_abertura,status,dia_fechamento
-```
-
-| Campo | Obrigatório | Regra |
-|---|---|---|
-| `protocolo` | Sim | `CH-` seguido de ao menos três dígitos de 0 a 9, com número positivo e único; gerado pelo cadastro |
-| `categoria` | Sim | `iluminacao`, `acessibilidade`, `limpeza` ou `conservacao` |
-| `prioridade` | Sim | `urgente`, `alta` ou `normal` |
-| `descricao` | Sim | Texto breve sobre o problema, sem dados pessoais |
-| `bloco` | Sim | Localidade genérica, como `Bloco A` |
-| `area` | Sim | Área comum, como `Garagem` ou `Jardim` |
-| `dia_abertura` | Sim | Inteiro positivo representado como texto |
-| `status` | Sim | Um dos quatro valores padronizados abaixo |
-| `dia_fechamento` | Quando resolvido | Inteiro positivo igual ou posterior à abertura; deve ficar vazio nos demais status |
-
-Os dias são simulados: `1`, `2`, `3` etc., sem correspondência obrigatória com datas de calendário. O fechamento no mesmo dia da abertura é permitido. Os dicionários mantêm os valores como **strings**, inclusive os dias; para calcular intervalos, use `int(chamado["dia_abertura"])` e `int(chamado["dia_fechamento"])` após a validação.
+- **Significado de cada status:**
 
 | Status | Significado |
 |---|---|
-| `aberto` | Registrado e ainda não examinado |
-| `em_atendimento` | Assumido pela administração |
-| `aguardando_terceiro` | Depende de empresa ou peça |
-| `resolvido` | Atendimento concluído e fechamento informado |
+| `aberto` | registrado e ainda não examinado (está na fila de triagem) |
+| `em_atendimento` | a administração assumiu o chamado |
+| `aguardando_terceiro` | depende de uma empresa externa ou de uma peça |
+| `resolvido` | atendimento concluído, com dia de fechamento |
 
-As constantes `PRAZOS` e `TRANSICOES` ficam disponíveis em `dados.py` para a integração do grupo. Os prazos previstos são `urgente: 1`, `alta: 3` e `normal: 7` dias. A prioridade não altera a ordem de chegada da fila de triagem.
+- **Dias:** são números inteiros positivos (dia 1, dia 2…). Um texto como `0`, `-1`, `1.5` ou `abc` é recusado.
+- **Na carga do CSV:** um registro inválido gera um aviso e fica fora da lista, mas o número do protocolo dele continua reservado. É o caso do `CH-013`, que está sem categoria.
 
-## Cobertura dos dados iniciais
+### Mudança de status (`chamados.py`)
 
-| Critério | Base entregue |
+| Status atual | Pode ir para |
 |---|---|
-| Pelo menos 12 ocorrências válidas | 13 válidas, incluindo o cadastro existente `CH-014` |
-| Quatro categorias | Todas representadas; três ou mais chamados válidos por categoria |
-| Pelo menos três situações distintas | Quatro status representados |
-| Pelo menos oito eventos de acompanhamento | 13 mudanças de status em `historico.csv` |
-| Registro ausente ou inconsistente tratado | `CH-013`, sem categoria, rejeitado com aviso |
+| `aberto` | `em_atendimento` |
+| `em_atendimento` | `aguardando_terceiro` ou `resolvido` |
+| `aguardando_terceiro` | `em_atendimento` |
+| `resolvido` | nada (o fluxo termina) |
 
-O CSV tem 14 registros ao todo. `CH-013` permanece no arquivo para demonstrar a validação, mas não entra na lista de chamados válidos. Seu número continua reservado. Corrigir sua categoria para `iluminacao` permite carregá-lo em uma nova execução. Mesmo que a linha de maior protocolo seja rejeitada, seu número não será reutilizado.
+O dia de uma atualização não pode ser anterior à abertura nem ao último evento daquele chamado.
 
-## Histórico inicial
+### Condições com AND, OR e NOT, e a mensagem que cada uma produz
 
-`data/historico.csv` usa o mesmo formato de codificação e separador, com cabeçalho:
+| Condição (como está no código) | Arquivo | Quando é verdadeira, o sistema… |
+|---|---|---|
+| `(categoria and categoria not in CATEGORIAS) or (status and status not in STATUS)` | `chamados.py` | mostra **"Filtro inválido"**: o usuário digitou uma categoria ou um status que não existe. Um campo vazio não conta como erro, porque significa "todos" |
+| `(not categoria or chamado["categoria"] == categoria) and (not status or chamado["status"] == status)` | `chamados.py` | **inclui o chamado no resultado do filtro**: ele precisa passar nos dois critérios, e um critério vazio deixa todos passarem |
+| `fechamento is None or (abertura is not None and fechamento < abertura)` | `dados.py` | recusa um chamado `resolvido` **sem dia de fechamento ou com fechamento antes da abertura** |
+| `anterior != ultimos_status[protocolo] or novo not in TRANSICOES[anterior]` | `dados.py` | **bloqueia a carga do histórico** se um evento pula uma etapa ou faz uma transição proibida |
+| `atrasado and (prioridade == "urgente" or prioridade == "alta")` | `dashboard.py` | conta um **atraso crítico**: o chamado passou do prazo e é urgente ou alto |
+| `not chamado["status"] == "resolvido"` | `dashboard.py` | considera o chamado **pendente** |
+| `numero is not None and 1 <= numero <= len(opcoes)` | `sistema.py` | aceita a escolha do menu; se for falsa, mostra **"Opção inválida"** e pergunta de novo |
 
-```csv
-protocolo,dia_evento,status_anterior,status_novo,observacao
-```
-
-Todos os campos do histórico são obrigatórios. Cada evento deve apontar para um chamado válido, ter dia positivo igual ou posterior à abertura e ao evento anterior daquele chamado, além de respeitar a sequência de status. O histórico começa implicitamente em `aberto`; registrar a abertura não exige um evento separado.
-
-As transições permitidas são:
-
-- `aberto` → `em_atendimento`;
-- `em_atendimento` → `aguardando_terceiro` ou `resolvido`;
-- `aguardando_terceiro` → `em_atendimento`;
-- `resolvido` encerra o fluxo.
-
-O último status de cada histórico deve coincidir com `chamados.csv`. Para resolvidos, o dia do último evento deve ser o dia de fechamento. Chamados ainda abertos podem não ter eventos. Uma inconsistência no histórico bloqueia a carga inicial com mensagem explicativa, pois descartar um evento isolado poderia quebrar a sequência.
-
-O arquivo agrupa eventos por protocolo, em ordem cronológica dentro de cada chamado. `carregar_historico` retorna a lista ordenada por dia para que o último item represente o evento mais recente na pilha; empates mantêm a ordem do arquivo.
-
-## Validações e regras lógicas
-
-`validar` devolve uma lista de motivos, incluindo os nomes dos campos obrigatórios ausentes. Categoria, prioridade e status desconhecidos são rejeitados. Dias como `0`, `-1`, `1.5`, letras ou o caractere `²` são rejeitados sem encerrar o cadastro. Um chamado não resolvido não pode ter fechamento, e um resolvido precisa de fechamento coerente mesmo quando a abertura também está inválida.
-
-Exemplos das expressões usadas:
-
-- `if not dados[campo]` identifica texto obrigatório vazio e permite informar qual campo falta.
-- `fechamento is None or (abertura is not None and fechamento < abertura)` rejeita fechamento ausente/inválido ou anterior a uma abertura válida.
-- `anterior != ultimos_status[protocolo] or novo not in TRANSICOES[anterior]` rejeita histórico que pula um elo da sequência ou aplica uma transição proibida.
-- `numero is not None and 1 <= numero <= len(opcoes)` aceita apenas uma escolha numérica dentro do menu apresentado.
-
-O dicionário `TRANSICOES` representa a expressão booleana prevista no plano:
+**Expressão booleana documentada.** O filtro é a expressão central de consulta:
 
 ```python
-(atual == "aberto" and novo == "em_atendimento") or (
-    atual == "em_atendimento"
-    and (novo == "aguardando_terceiro" or novo == "resolvido")
-) or (atual == "aguardando_terceiro" and novo == "em_atendimento")
+filtro_invalido = (categoria and categoria not in CATEGORIAS) or (status and status not in STATUS)
 ```
 
-Cada trecho permite um dos caminhos descritos acima. Se nenhum for verdadeiro, a transição é inválida. A mesma regra vale na carga do histórico e na opção 6 do menu, que lê `TRANSICOES` de `dados.py`.
+Se o usuário digitar `jardim` como categoria, `categoria` é verdadeiro (não está vazio) **e** `categoria not in CATEGORIAS` também é. O primeiro lado do `or` fica verdadeiro, a expressão inteira fica verdadeira e o sistema mostra "Filtro inválido". Se ele deixar a categoria vazia e digitar `aberto`, os dois lados são falsos e o filtro roda normalmente.
 
-Erros de dados comuns, como a categoria ausente em `CH-013`, geram aviso e exclusão apenas da lista em memória. Cabeçalho incompatível, quantidade incorreta de colunas, CSV malformado, codificação inválida e protocolos duplicados ou inválidos bloqueiam a carga. Comparar também o número do protocolo impede tratar `CH-001` e `CH-0001` como identificadores diferentes.
+**Outras mensagens:**
 
-A gravação valida novamente o registro e verifica se o protocolo já está reservado antes de acrescentá-lo. Ela preserva as linhas rejeitadas e funciona mesmo se faltar uma quebra de linha no final do arquivo. Esta implementação pressupõe uma pessoa cadastrando por vez; alterações manuais nos CSV devem ser feitas com o programa fechado.
-
-## Integração com as outras partes
-
-As funções de `dados.py` podem receber caminhos alternativos para testes. Na execução normal, usam os CSV de `data`.
-
-| Função | Retorno / comportamento |
+| Situação | Mensagem |
 |---|---|
-| `carregar(caminho=ARQUIVO, exibir_avisos=True)` | Tupla `(chamados, numeros)`: lista de dicionários válidos e conjunto de números reservados, incluindo os das linhas rejeitadas |
-| `validar(chamado)` | Lista de erros; vazia quando o registro é válido; não modifica a entrada |
-| `dia_simulado(valor)` | Dia como inteiro positivo, ou `None` para texto inválido |
-| `carregar_historico(chamados, caminho=ARQUIVO_HISTORICO)` | Recebe os chamados já validados e retorna eventos válidos do mais antigo ao mais recente |
-| `salvar_novo_chamado(chamado, caminho=ARQUIVO)` | Valida e acrescenta um chamado `aberto`; retorna o dicionário salvo |
+| protocolo que não existe | **"Chamado CH-099 não encontrado."** |
+| status fora da lista | **"Status desconhecido"** |
+| transição proibida (por exemplo, `aberto` → `resolvido`) | **"Transição bloqueada"** |
+| chamado já resolvido | **"o fluxo foi encerrado"** |
 
-Problemas de integridade geram `ValueError`; falhas de acesso podem gerar `OSError`. O menu trata ambos com mensagens. Para os próximos módulos, a carga inicial pode ser feita assim:
+O menu principal usa uma sequência de `if`/`elif`/`else` (`sistema.py`).
 
-```python
-from dados import carregar, carregar_historico
+## 5. Indicadores, fórmulas e interpretação
 
-chamados, numeros = carregar()
-historico = carregar_historico(chamados)
-por_protocolo = {chamado["protocolo"]: chamado for chamado in chamados}
-```
+O painel (opção 8 do menu) mostra os dados de origem, a fórmula e o resultado de cada indicador. O "hoje" simulado é o **dia de referência**: o maior dia que aparece na base, que é o dia 18 nos dados entregues.
 
-A lista permite percorrer todos os chamados; o conjunto de números impede reutilizar protocolos. O dicionário permite acesso por protocolo, e a lista de eventos é usada como pilha.
-
-## Chamados (parte B)
-
-`src/chamados.py` recebe as estruturas montadas em `sistema.py`:
-
-| Estrutura | Variável | Uso |
+| Indicador | Fórmula | Resultado na base entregue |
 |---|---|---|
-| Lista | `chamados` | listar e filtrar, percorrendo com `for` |
-| Dicionário | `por_protocolo` | consultar e atualizar sem percorrer a lista |
-| Fila | `fila_triagem` | chamados `aberto` na ordem de registro; `pop(0)` atende o primeiro e novos cadastros entram no fim com `append` |
-| Pilha | `historico` | cada mudança é empilhada com `append`; as últimas atualizações desempilham uma cópia com `pop()` |
+| Chamados por status | quantidade e quantidade ÷ total × 100 | aberto 5 (38,5%) · em atendimento 3 (23,1%) · aguardando terceiro 2 (15,4%) · resolvido 3 (23,1%) |
+| Chamados por categoria | quantidade e quantidade ÷ total × 100 | iluminação 4 (30,8%) · acessibilidade 3 · limpeza 3 · conservação 3 (23,1% cada) |
+| Taxa de resolução | resolvidos ÷ total × 100 | 3 ÷ 13 = **23,1%** |
+| Tempo médio de resolução | soma(fechamento − abertura) ÷ resolvidos | (2 + 3 + 3) ÷ 3 = **2,7 dias** |
+| Resolvidos no prazo | resolução ≤ prazo da prioridade | **3 de 3** |
+| Espera média das pendências | soma(referência − abertura) ÷ pendentes | 104 ÷ 10 = **10,4 dias** |
+| Pendências fora do prazo | pendente e espera > prazo | **9 de 10**: 2 urgentes, 4 altas e 3 normais |
 
-Regras aplicadas no menu:
+**Matriz categoria × status:**
 
-- `(categoria and categoria not in CATEGORIAS) or (status and status not in STATUS)` recusa um filtro com valor fora da lista; campo vazio significa "todos".
-- `(not categoria or chamado["categoria"] == categoria) and (not status or chamado["status"] == status)` seleciona os chamados do filtro.
-- `novo not in TRANSICOES[atual]` bloqueia transições proibidas, como `aberto` direto para `resolvido`.
-- O dia de uma atualização não pode ser anterior à abertura nem ao último evento do chamado.
+| Categoria | Aberto | Em atendimento | Aguardando terceiro | Resolvido | Total |
+|---|---|---|---|---|---|
+| Iluminação | 2 | 1 | 0 | 1 | 4 |
+| Acessibilidade | 1 | 1 | 1 | 0 | 3 |
+| Limpeza | 1 | 1 | 0 | 1 | 3 |
+| Conservação | 1 | 0 | 1 | 1 | 3 |
+| **Total** | 5 | 3 | 2 | 3 | 13 |
 
-## Dashboard (parte C)
+**Matriz bloco × status:**
 
-O módulo src/dashboard.py monta o painel a partir dos chamados já validados por dados.py. Ele só lê os dados; nada é gravado nos CSV. No menu principal, a opção 8 — Painel de indicadores mostra o painel geral e a opção 9 — Visão por bloco mostra o painel de um bloco escolhido por número. As duas chamam src/indicadores.py, que repassa os dados para o dashboard.py. O painel também abre sozinho com python src/dashboard.py.
-
-Se o menu enviar o histórico (exibir_painel_indicadores(chamados, historico)), o painel mostra as últimas atualizações; sem ele, essa seção aparece vazia. O dashboard aceita dias como texto ou inteiro e eventos nos dois formatos do grupo (dia_evento/status_anterior/status_novo ou dia/de/para).
-
-Neste condomínio, cada bloco corresponde a uma torre. O nome do bloco é padronizado só para agrupar (bloco  a e Bloco A entram no mesmo grupo); o valor gravado não muda.
-
-### Seções do painel geral
-
-- Chamados por status: quantidade, proporção e barra de texto.
-- Chamados por categoria: mesmo formato.
-- Matriz categoria × status (lista de listas): linha = categoria, coluna = status, com totais.
-- Matriz bloco/torre × status: quantos chamados cada torre tem em cada situação.
-- Hierarquia bloco/torre → categoria → chamados: dicionário de dicionários de listas, exibido em árvore com protocolo, área, status e prioridade.
-- Indicadores, com fórmula e dados de origem na tela.
-- Últimas atualizações: o histórico é usado como pilha; uma cópia é desempilhada com pop() para mostrar os 5 eventos mais recentes sem apagar o original.
-- Conclusão: frases geradas por regras simples a partir dos números.
-
-O painel por bloco/torre repete status, categoria, chamados, indicadores e últimas atualizações filtrados para um bloco.
-
-### Estruturas de dados
-
-| Estrutura | Uso no dashboard | Por quê |
-|---|---|---|
-| Lista | chamados e historico percorridos com for | Guarda todos os registros na ordem de cadastro |
-| Dicionário | contar_por devolve {valor: quantidade} | Acesso direto ao contador de cada categoria/status |
-| Matriz (lista de listas) | categoria × status e bloco × status | Cruza duas informações numa tabela; somar linha ou coluna dá os totais |
-| Hierarquia (dict → dict → list) | montar_hierarquia | Organiza do geral (torre) ao específico (chamado), como o condomínio é percorrido |
-| Pilha | ultimos_eventos | O último evento empilhado é o mais recente; pop() lê do topo |
-
-### Indicadores e fórmulas
-
-O dia de referência ("hoje" simulado) é o maior dia que aparece em aberturas, fechamentos ou eventos. Na base entregue, é o dia 18 (abertura do CH-014).
-
-| Indicador | Fórmula | Base entregue |
-|---|---|---|
-| Proporção por categoria/status | quantidade ÷ total × 100 | ex.: 5 abertos ÷ 13 = 38,5% |
-| Taxa de resolução | resolvidos ÷ total × 100 | 3 ÷ 13 = 23,1% |
-| Tempo médio de resolução | soma(fechamento − abertura) ÷ resolvidos | (2 + 3 + 3) ÷ 3 = 2,7 dias |
-| Resolvidos no prazo | resolução ≤ PRAZOS[prioridade] | 3 de 3 |
-| Espera média das pendências | soma(referência − abertura) ÷ pendentes | 104 ÷ 10 = 10,4 dias |
-| Pendências fora do prazo | pendente e espera > PRAZOS[prioridade] | 9 de 10 (6 urgentes ou altas) |
-
-Distribuição por torre na base entregue:
-
-| Bloco/torre | Aberto | Em atendimento | Aguardando terceiro | Resolvido | Total |
+| Bloco | Aberto | Em atendimento | Aguardando terceiro | Resolvido | Total |
 |---|---|---|---|---|---|
 | Bloco A | 2 | 0 | 1 | 2 | 5 |
 | Bloco B | 2 | 1 | 0 | 1 | 4 |
 | Bloco C | 1 | 2 | 1 | 0 | 4 |
 
-As porcentagens são arredondadas para uma casa decimal, então a soma exibida pode variar em 0,1 ponto.
+**Interpretação.** Iluminação é o problema mais frequente, e o Bloco C é o mais crítico: nenhum dos 4 chamados dele foi resolvido. Só 23,1% dos chamados foram resolvidos, e 9 das 10 pendências passaram do prazo, 2 delas urgentes (CH-002 e CH-009). Há ainda um terceiro urgente sem solução, o CH-014, que acabou de ser aberto e está dentro do prazo. Por outro lado, os chamados resolvidos fecharam rápido (2,7 dias em média, todos no prazo). Isso indica que o gargalo está em **começar** o atendimento, não em concluí-lo. Na prática, a triagem precisa andar mais rápido. Como os dados são fictícios, a conclusão serve para mostrar o raciocínio, não para avaliar um condomínio real.
 
-### Expressões booleanas do dashboard
+## 6. Como executar
 
-- `espera > prazo and (prioridade == "urgente" or prioridade == "alta")`: conta um atraso crítico só quando o chamado passou do prazo e é urgente ou alto.
-- `not chamado["status"] == "resolvido"`: define pendente como tudo que não está resolvido.
-- `if categoria in CATEGORIAS and status in STATUS`: só soma na matriz valores padronizados, protegendo os índices.
-- `if total == 0 / if not chamados`: evita divisão por zero e mostra aviso quando não há chamados.
-
-### Interpretação da base simulada
-
-Iluminação é a categoria mais frequente (4 chamados). O Bloco C concentra mais pendências (4 de 4 chamados sem solução). Só 23,1% dos chamados foram resolvidos, e 9 das 10 pendências passaram do prazo, incluindo 3 urgentes. Os poucos chamados resolvidos fecharam rápido (2,7 dias em média, todos no prazo), o que indica que o gargalo está em iniciar o atendimento, não em concluí-lo. Como os dados são fictícios, essas conclusões servem para demonstrar o raciocínio, não para avaliar um condomínio real.
-
-### Acessibilidade
-
-O painel não depende de cores: toda barra vem acompanhada do número e da porcentagem, as abreviações das matrizes têm legenda, e a escolha do bloco é feita por número. Nenhum dado pessoal é exibido, só bloco e área comum.
-
-## Verificação
-
-Na pasta do projeto:
+É preciso ter **Python 3.8 ou mais recente**. O sistema usa só a biblioteca padrão. Na pasta `1CCOMP/GLOBAL-SOLUTION-1`:
 
 ```bash
-python -B -m unittest discover -s tests -v
+python src/sistema.py
 ```
 
-Os testes de `test_dados.py` cobrem os mínimos do enunciado na base entregue, campos obrigatórios, valores e datas inválidos, estrutura do CSV, reserva de protocolos, coerência do histórico, preservação dos dados na gravação e cadastro de dois chamados consecutivos pelo menu. Os testes de escrita usam arquivos temporários e não alteram a base entregue. `test_chamados.py` cobre a ordem da fila, transições válidas e bloqueadas, saída da fila, consulta, filtro e a pilha de atualizações; `test_dashboard.py` cobre o painel.
+| Opção | O que faz |
+|---|---|
+| 1 | lista os chamados (protocolo, categoria, prioridade, bloco/área, abertura, status) |
+| 2 | abre um chamado: valida os campos, gera o protocolo, grava no CSV e coloca o chamado no fim da fila |
+| 3 | consulta um chamado pelo protocolo |
+| 4 | filtra por categoria, por status ou pelos dois |
+| 5 | atende o próximo da fila (vai para `em_atendimento`) |
+| 6 | atualiza o status, só para os próximos status permitidos, e registra no histórico |
+| 7 | mostra as 5 últimas atualizações (topo da pilha) |
+| 8 | mostra o painel de indicadores completo |
+| 9 | mostra o painel de um bloco |
+| 10 | abre o dashboard web com os dados desta sessão (opcional, ver a seção "Extras") |
+| 0 | sai |
 
-O registro da assistência por IA está em [docs/uso_ia.md](docs/uso_ia.md).
+**Os dados ficam em `data/`:**
+
+- `chamados.csv`: os chamados, em UTF-8 e separados por vírgula;
+- `historico.csv`: as mudanças de status.
+
+Os cadastros novos (opção 2) são gravados no CSV. As mudanças de status (opções 5 e 6) valem durante a execução. A opção 10 regrava o `web/dados.js`. Para voltar à base original depois de uma demonstração, rode `git checkout -- data web/dados.js`.
+
+Os testes automatizados (23) ficam em `tests/`:
+
+```bash
+python -m unittest discover -s tests
+```
+
+## 7. Exemplo de uso
+
+Trechos da saída real do sistema. As entradas digitadas aparecem depois de `→`, e algumas perguntas foram resumidas numa linha só.
+
+**Cadastro** (opção 2):
+
+```text
+Escolha: 2  → categoria 1 (iluminacao), prioridade 1 (urgente)
+Descrição: → Poste apagado na entrada da garagem
+Bloco: → Bloco B        Área comum: → Garagem        Dia simulado de abertura: → 19
+[OK] Chamado cadastrado! Protocolo: CH-015
+```
+
+**Consulta por protocolo** (opção 3):
+
+```text
+Informe o protocolo (ex.: CH-001): → CH-015
+===== DADOS DO CHAMADO =====
+protocolo: CH-015
+categoria: iluminacao
+prioridade: urgente
+descricao: Poste apagado na entrada da garagem
+bloco: Bloco B
+area: Garagem
+dia_abertura: 19
+status: aberto
+dia_fechamento: -
+```
+
+**Filtro** (opção 4), com categoria `iluminacao` e status `aberto`:
+
+```text
+PROTOCOLO | CATEGORIA | PRIORIDADE | BLOCO / ÁREA | ABERTURA | STATUS
+CH-005 | iluminacao | normal | Bloco B / Corredor comum | dia 4 | aberto
+CH-014 | iluminacao | URGENTE | Bloco A / Hall | dia 18 | aberto
+CH-015 | iluminacao | URGENTE | Bloco B / Garagem | dia 19 | aberto
+```
+
+**Alteração de status** (opção 6). Primeiro, uma transição proibida; depois, a permitida:
+
+```text
+Informe o protocolo: → CH-015
+Status atual: aberto. Próximos permitidos: em_atendimento.
+Novo status: → resolvido
+[!] Transição bloqueada: aberto não pode ir direto para resolvido.
+
+Informe o protocolo: → CH-015
+Status atual: aberto. Próximos permitidos: em_atendimento.
+Novo status: → em_atendimento     Dia da atualização: → 19     Observação: → Zelador trocou o reator
+[OK] Chamado CH-015: aberto -> em_atendimento registrado no histórico.
+```
+
+**Últimas atualizações** (opção 7, a pilha):
+
+```text
+===== ÚLTIMAS 5 ATUALIZAÇÕES (mais recente primeiro) =====
+Dia 19 | CH-015 | aberto -> em_atendimento | Zelador trocou o reator
+Dia 11 | CH-010 | em_atendimento -> aguardando_terceiro | Assistência especializada solicitada
+Dia 10 | CH-010 | aberto -> em_atendimento | Elevador inspecionado
+Dia 10 | CH-008 | em_atendimento -> resolvido | Banco reparado
+Dia 9 | CH-009 | aberto -> em_atendimento | Administração iniciou a verificação
+```
+
+**Saída do painel** (opção 8, trecho dos indicadores, com a base original):
+
+```text
+Taxa de resolução: 3 resolvidos / 13 chamados x 100 = 23.1%
+Tempo médio de resolução: soma(fechamento - abertura) / resolvidos = 8 / 3 = 2.7 dia(s)
+Resolvidos dentro do prazo da prioridade: 3 de 3
+Espera média das pendências: soma(referência - abertura) / pendentes = 104 / 10 = 10.4 dia(s)
+Pendências fora do prazo (urgente 1 dia(s), alta 3 dia(s), normal 7 dia(s)): 9 de 10
+  das quais com prioridade urgente ou alta: 6
+```
+
+## 8. Acessibilidade, inclusão e privacidade
+
+- **Privacidade:** o chamado registra só o bloco e a área comum, nunca nome, apartamento ou telefone do morador. O cadastro lembra isso na tela. Todos os dados do projeto são fictícios.
+- **Inclusão:** a acessibilidade é uma categoria própria, e uma rampa quebrada ou um elevador parado pode ser registrado como urgente, com prazo de 1 dia. A fila de triagem segue a ordem de chegada, mas a administração pode assumir um chamado urgente direto pela opção 6, sem esperar a vez. O painel conta os urgentes sem solução e os atrasos críticos (urgentes ou altos fora do prazo).
+- **Acessibilidade da interface:**
+  - o menu é numerado e as escolhas de categoria e prioridade são feitas por número, sem precisar digitar termos técnicos;
+  - entradas inválidas são perguntadas de novo, com uma mensagem que diz o que está errado;
+  - as cores do terminal só reforçam o texto: status, prioridade e mensagens (`[OK]`, `[!]`) estão sempre escritos por extenso;
+  - as cores são desligadas quando a saída não é um terminal ou quando a variável `NO_COLOR` está definida;
+  - no painel, toda barra vem acompanhada do número e da porcentagem.
+
+## 9. Vídeo de apresentação
+
+**[LINK DO VÍDEO NO YOUTUBE: preencher antes da entrega]**
+
+## 10. Conclusões, limitações e aprendizados
+
+**Conclusões.** Com estruturas simples (lista, dicionário, fila, pilha, matriz e uma hierarquia de dicionários) e regras com `if`/`elif`/`else` e AND/OR/NOT, foi possível transformar reclamações soltas em informação útil: quem registrou, onde, em que situação está e há quanto tempo espera. Os indicadores mostram onde agir primeiro. Na base simulada, isso significa acelerar a triagem e olhar para o Bloco C.
+
+**Limitações:**
+
+- os dados são simulados, e o "hoje" é um dia de referência, não a data real;
+- as mudanças de status valem durante a execução e não são gravadas no CSV; só os cadastros novos são gravados;
+- não há login nem perfis: qualquer pessoa usando o terminal pode mudar um status, e o sistema considera uma pessoa usando por vez;
+- não há integração com a administração real, notificação ao morador nem anexos (como fotos do problema);
+- os prazos por prioridade são fixos e não consideram dias úteis.
+
+**Aprendizados:**
+
+- **A estrutura depende da operação.** A fila resolveu "quem é o próximo"; a pilha, "o que aconteceu por último"; o dicionário, "me mostra o CH-010". Usar uma lista para tudo funcionaria, mas deixaria cada operação mais confusa.
+- **Validar na entrada protege os indicadores.** Um chamado sem categoria ou com fechamento antes da abertura distorceria as médias. Por isso o `CH-013` é recusado logo na carga.
+- **Separar o cálculo da exibição** (`calcular_indicadores` × `exibir_dashboard`) permitiu conferir os números com testes automatizados, sem depender do que aparece na tela.
+- **Combinar as regras antes de dividir o trabalho.** As três partes do grupo só se encaixaram depois que todos passaram a usar as mesmas constantes de `dados.py` (categorias, prazos e transições).
+
+## Extras
+
+### Tema visual no terminal
+
+O banner, o menu e as cores seguem a narrativa da Colônia Aurora (`src/visual.py`). É só apresentação: nenhuma regra muda.
+
+### Dashboard web (opcional)
+
+O `web/index.html` é um painel visual com as mesmas regras, traduzidas em `web/regras.js` (mesmas categorias, prazos, transições, validação e fórmulas):
+
+- filtro por bloco;
+- gráfico por status e barras por categoria;
+- mapa bloco × status;
+- fila, pilha, indicadores e conclusão;
+- cadastro e mudança de status.
+
+A **opção 10 do menu** exporta os dados da sessão para `web/dados.js` e abre a página no navegador. A ligação vai só do terminal para a web: o que é feito na página vale só naquela aba. Para gerar os dados sem abrir o menu, use `python web/gerar_dados.py`.
+
+O dashboard usa HTML, CSS, JavaScript e [anime.js](https://animejs.com/) 3.2.2, que estão fora do conteúdo das fases 1 a 3. Por isso ele é só um complemento: **o sistema avaliado é o Python** (`python src/sistema.py`).
+
+## Organização da entrega
+
+```text
+GLOBAL-SOLUTION-1/
+├── README.md
+├── data/
+│   ├── chamados.csv        # 14 registros: 13 válidos + CH-013 (inválido, para a validação)
+│   └── historico.csv       # 13 mudanças de status
+├── src/
+│   ├── sistema.py          # menu principal (ponto de entrada)
+│   ├── dados.py            # constantes, leitura, validação e gravação dos CSV
+│   ├── chamados.py         # consulta, filtro, fila, mudança de status e histórico
+│   ├── indicadores.py      # opções 8 e 9 do menu
+│   ├── dashboard.py        # painel: contagens, matrizes, hierarquia, indicadores e conclusão
+│   ├── visual.py           # banner, menu e cores do tema
+│   └── painel_web.py       # opção 10: exporta a sessão e abre o dashboard web
+├── tests/                  # test_dados.py, test_chamados.py, test_dashboard.py
+├── web/                    # dashboard web opcional
+└── docs/uso_ia.md          # registro do uso de inteligência artificial
+```
+
+### Formato dos arquivos
+
+`data/chamados.csv`:
+
+```csv
+protocolo,categoria,prioridade,descricao,bloco,area,dia_abertura,status,dia_fechamento
+CH-001,iluminacao,alta,Lâmpada apagada na garagem,Bloco A,Garagem,1,resolvido,3
+```
+
+`data/historico.csv`:
+
+```csv
+protocolo,dia_evento,status_anterior,status_novo,observacao
+CH-001,2,aberto,em_atendimento,Administração iniciou a verificação
+```
+
+Os dois arquivos usam UTF-8 e vírgula como separador.
+
+**Regras do histórico:**
+
+- cada evento precisa apontar para um chamado válido;
+- os dias não podem voltar no tempo;
+- a sequência de status precisa seguir a tabela de transições;
+- o último status precisa bater com o do `chamados.csv`.
+
+Se algo não fechar, a carga é interrompida com uma mensagem explicando o motivo.
+
+**Dados entregues × mínimo do enunciado:**
+
+| Exigência do enunciado | Dados entregues |
+|---|---|
+| ≥ 12 ocorrências nas 4 categorias | 13 válidas (iluminação 4, as outras 3 cada) |
+| ≥ 3 situações distintas | 4 status |
+| ≥ 8 eventos de acompanhamento | 13 eventos |
+| ≥ 1 registro inconsistente tratado | `CH-013`, sem categoria, rejeitado com aviso |
+
+## Uso de inteligência artificial
+
+O registro está em [docs/uso_ia.md](docs/uso_ia.md).
