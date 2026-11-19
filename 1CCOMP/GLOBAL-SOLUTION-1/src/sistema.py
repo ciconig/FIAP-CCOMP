@@ -7,6 +7,7 @@ from dados import (
     salvar_novo_chamado,
 )
 from indicadores import exibir_painel_indicadores, exibir_visao_por_bloco
+from painel_web import abrir_painel_web
 from visual import erro, mostrar_banner, mostrar_menu, ok
 
 
@@ -90,6 +91,8 @@ def main():
                 exibir_painel_indicadores(chamados, historico)
             elif opcao == "9":
                 exibir_visao_por_bloco(chamados, historico)
+            elif opcao == "10":
+                abrir_painel_web(chamados, historico)
             else:
                 erro("Opção inválida. Tente novamente.")
         except (ValueError, OSError) as falha:

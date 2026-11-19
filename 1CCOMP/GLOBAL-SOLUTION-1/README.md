@@ -34,6 +34,7 @@ Na inicialização, o programa avisa que `CH-013` está sem categoria e mostra a
 - **6 — Atualizar status:** mostra os próximos status permitidos, bloqueia transições proibidas e registra a mudança no histórico.
 - **7 — Últimas atualizações:** os 5 eventos mais recentes, do topo da pilha para baixo.
 - **8 — Painel de indicadores** e **9 — Visão por bloco:** ver a seção do dashboard.
+- **10 — Abrir dashboard web:** exporta os dados desta sessão (inclusive cadastros e mudanças de status ainda não salvas) para `web/dados.js`, abre `web/index.html` no navegador e mostra o link no terminal, caso o navegador não abra sozinho.
 - **0 — Sair.**
 
 Mudanças de status (opções 5 e 6) ficam na memória durante a execução e aparecem no painel e nas últimas atualizações; só os cadastros novos são gravados no CSV.
@@ -59,14 +60,14 @@ Para testar o cadastro, uma descrição possível é “Luz apagada no hall”, 
 
 `web/index.html` é um painel de controle do mesmo help desk, com o tema da Colônia Aurora: alertas (fora do prazo, urgentes, fila), filtro por bloco, gráfico de status, barras por categoria, mapa bloco × status, fila de triagem com "atender próximo", últimas atualizações (pilha), indicadores e conclusão. Clicar no gráfico, nas barras ou no mapa filtra a lista de chamados; clicar num chamado abre o detalhe com histórico e os próximos status permitidos; "+ Novo chamado" abre o cadastro com a mesma validação do Python. Animações com [anime.js](https://animejs.com/) 3.2.2; sem ele (offline) ou com "reduzir movimento" ativado no sistema, a página funciona igual, sem animação.
 
-As regras ficam em `web/regras.js`, uma tradução direta de `dados.py`, `chamados.py` e `dashboard.py` (mesmas categorias, prazos, transições, validação e fórmulas). Os dados vêm de `web/dados.js`, gerado a partir dos CSV:
+As regras ficam em `web/regras.js`, uma tradução direta de `dados.py`, `chamados.py` e `dashboard.py` (mesmas categorias, prazos, transições, validação e fórmulas). Os dados vêm de `web/dados.js`. A forma mais simples de abrir é pela **opção 10 do menu**, que gera esse arquivo com o estado atual da sessão e abre o navegador. Também dá para gerar a partir dos CSV, sem abrir o menu:
 
 ```bash
 python web/gerar_dados.py        # atualiza web/dados.js depois de mudar os CSV
 python -m http.server -d web     # depois abra http://localhost:8000
 ```
 
-Abrir o `index.html` direto no navegador também funciona. As alterações feitas na página valem só naquela aba. **O sistema avaliado continua sendo o Python** (`python src/sistema.py`); a interface web é uma demonstração visual das mesmas regras.
+Abrir o `index.html` direto no navegador também funciona. A ligação é do terminal para a web: as alterações feitas na página valem só naquela aba e não voltam para o terminal; para atualizar a página, use a opção 10 de novo e recarregue. **O sistema avaliado continua sendo o Python** (`python src/sistema.py`); a interface web é uma demonstração visual das mesmas regras.
 
 ## Organização da entrega
 
@@ -81,6 +82,7 @@ GLOBAL-SOLUTION-1/
 │   ├── indicadores.py     # opções 8 e 9 do menu
 │   ├── dashboard.py       # painel, matrizes, hierarquia e indicadores
 │   ├── visual.py          # banner, menu e cores do tema Colônia Aurora
+│   ├── painel_web.py      # opção 10: exporta a sessão e abre o dashboard web
 │   └── sistema.py         # menu principal (ponto de entrada)
 ├── web/                   # interface web (index.html, app.js, regras.js, dados.js)
 ├── tests/                 # test_dados.py, test_chamados.py, test_dashboard.py

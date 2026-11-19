@@ -6,8 +6,12 @@ from pathlib import Path
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+import json
+import tempfile
+
 import chamados
 import dados
+import painel_web
 
 
 def base():
@@ -82,6 +86,18 @@ class TestChamados(unittest.TestCase):
         self.assertEqual(historico, copia)
         self.assertIn("ÚLTIMAS 5", saida)
 
+
+    def test_exportacao_para_o_painel_web_reflete_a_sessao(self):
+        lista, por_protocolo, fila, historico = base()
+        rodar(chamados.atualizar_status, ["CH-005", "em_atendimento", "19", ""], por_protocolo, fila, historico)
+        with tempfile.TemporaryDirectory() as pasta:
+            destino = Path(pasta) / "dados.js"
+            total, eventos = painel_web.exportar(lista, historico, destino=destino)
+            texto = destino.read_text(encoding="utf-8")
+        exportados = json.loads(texto.split("window.DADOS_CHAMADOS = ", 1)[1].split(";\nwindow.", 1)[0])
+        self.assertEqual((total, eventos), (14, 14))
+        self.assertEqual(next(c for c in exportados if c["protocolo"] == "CH-005")["status"], "em_atendimento")
+        self.assertIn("CH-013", [c["protocolo"] for c in exportados])
 
 if __name__ == "__main__":
     unittest.main()
