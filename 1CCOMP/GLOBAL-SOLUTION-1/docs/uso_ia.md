@@ -12,7 +12,7 @@ Ferramentas: Codex (OpenAI) e Claude (Anthropic), em 18/11/2026.
 
 ## Como os resultados foram verificados
 
-- 22 testes automatizados (`python -B -m unittest discover -s tests`) cobrindo dados, chamados e painel, executados em um clone limpo do repositório.
+- 23 testes automatizados (`python -B -m unittest discover -s tests`) cobrindo dados, chamados e painel, executados em um clone limpo do repositório.
 - Execução manual do fluxo do exemplo do enunciado: cadastro, filtro, fila, mudanças de status, últimas atualizações e painel.
 - Conferência dos indicadores do README com a saída do sistema.
 - Comparação automática dos resultados da interface web (`web/regras.js`) com os do Python (indicadores, matrizes, atrasados e conclusão) e teste das interações no navegador.
