@@ -63,6 +63,7 @@ def mostrar_menu():
     ]
     for n1, texto1, n2, texto2 in opcoes:
         print(f"   {cor(n1, 'destaque')} - {texto1:<25}{cor(n2, 'destaque')} - {texto2}")
+    print(f"  {cor('10', 'destaque')} - Abrir dashboard web no navegador (com os dados desta sessão)")
     print(linha)
 
 
