@@ -57,7 +57,7 @@ Para testar o cadastro, uma descrição possível é “Luz apagada no hall”, 
 
 ### Interface web (extra)
 
-`web/index.html` é uma versão visual do mesmo help desk, com o tema da Colônia Aurora: lista com filtros, detalhe com histórico e atualização de status, abertura de chamado, fila de triagem, últimas atualizações (pilha) e painel com indicadores, matrizes, hierarquia e conclusão. Animações com [anime.js](https://animejs.com/) 3.2.2; sem ele (offline) ou com "reduzir movimento" ativado no sistema, a página funciona igual, sem animação.
+`web/index.html` é um painel de controle do mesmo help desk, com o tema da Colônia Aurora: alertas (fora do prazo, urgentes, fila), filtro por bloco, gráfico de status, barras por categoria, mapa bloco × status, fila de triagem com "atender próximo", últimas atualizações (pilha), indicadores e conclusão. Clicar no gráfico, nas barras ou no mapa filtra a lista de chamados; clicar num chamado abre o detalhe com histórico e os próximos status permitidos; "+ Novo chamado" abre o cadastro com a mesma validação do Python. Animações com [anime.js](https://animejs.com/) 3.2.2; sem ele (offline) ou com "reduzir movimento" ativado no sistema, a página funciona igual, sem animação.
 
 As regras ficam em `web/regras.js`, uma tradução direta de `dados.py`, `chamados.py` e `dashboard.py` (mesmas categorias, prazos, transições, validação e fórmulas). Os dados vêm de `web/dados.js`, gerado a partir dos CSV:
 
