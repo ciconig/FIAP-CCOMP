@@ -38,6 +38,21 @@ Na inicialização, o programa avisa que `CH-013` está sem categoria e mostra a
 
 Mudanças de status (opções 5 e 6) ficam na memória durante a execução e aparecem no painel e nas últimas atualizações; só os cadastros novos são gravados no CSV.
 
+### Interface: Colônia Aurora
+
+O terminal usa a narrativa do curso: o condomínio é o Habitat Marte-1, uma cúpula pressurizada da Colônia Aurora, e o menu é o painel de controle da colônia. O tema é só visual; dados, regras e indicadores são os mesmos. `src/visual.py` concentra o banner, o menu e as cores:
+
+| Elemento | Cor |
+|---|---|
+| Títulos, banner e bordas | laranja marciano |
+| `aberto` / `URGENTE` | vermelho |
+| `em_atendimento` | amarelo |
+| `aguardando_terceiro` | magenta |
+| `resolvido` e mensagens `[OK]` | verde |
+| Mensagens de erro `[!]` | vermelho |
+
+As cores só reforçam o texto: status, prioridade e mensagens continuam escritos por extenso, e os prefixos `[OK]` e `[!]` indicam sucesso ou erro sem depender de cor. Elas são desligadas automaticamente quando a saída não é um terminal e podem ser desativadas com a variável de ambiente `NO_COLOR`.
+
 Para testar o cadastro, uma descrição possível é “Luz apagada no hall”, local “Bloco A / Hall”, dia `18`. Na base entregue, o próximo protocolo é `CH-015`, pois `CH-014` já existe. Os cadastros persistem entre execuções; faça uma cópia dos CSV se quiser repetir a demonstração com a mesma base.
 
 ## Organização da entrega
@@ -52,6 +67,7 @@ GLOBAL-SOLUTION-1/
 │   ├── chamados.py        # consulta, filtro, fila de triagem, status e histórico
 │   ├── indicadores.py     # opções 8 e 9 do menu
 │   ├── dashboard.py       # painel, matrizes, hierarquia e indicadores
+│   ├── visual.py          # banner, menu e cores do tema Colônia Aurora
 │   └── sistema.py         # menu principal (ponto de entrada)
 ├── tests/                 # test_dados.py, test_chamados.py, test_dashboard.py
 └── docs/uso_ia.md
