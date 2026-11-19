@@ -23,11 +23,12 @@ def listar_chamados(chamados):
     if not chamados:
         print("Nenhum chamado encontrado.")
         return
-    print("\nPROTOCOLO | CATEGORIA | PRIORIDADE | BLOCO / ÁREA | STATUS")
+    print("\nPROTOCOLO | CATEGORIA | PRIORIDADE | BLOCO / ÁREA | ABERTURA | STATUS")
     for chamado in chamados:
         prioridade = cor("URGENTE", "erro") if chamado["prioridade"] == "urgente" else chamado["prioridade"]
         print(f"{chamado['protocolo']} | {chamado['categoria']} | "
-              f"{prioridade} | {chamado['bloco']} / {chamado['area']} | {cor_status(chamado['status'])}")
+              f"{prioridade} | {chamado['bloco']} / {chamado['area']} | dia {chamado['dia_abertura']} | "
+              f"{cor_status(chamado['status'])}")
 
 
 def _ler_dia(mensagem, minimo):

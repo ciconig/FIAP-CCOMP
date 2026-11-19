@@ -26,7 +26,7 @@ Os caminhos dos CSV são calculados a partir de `dados.py`, permitindo executar 
 
 Na inicialização, o programa avisa que `CH-013` está sem categoria e mostra a quantidade de chamados válidos e eventos de histórico carregados. O menu oferece:
 
-- **1 — Listar chamados:** exibe protocolo, categoria, prioridade, bloco, área comum e status. A prioridade `URGENTE` aparece em maiúsculas.
+- **1 — Listar chamados:** exibe protocolo, categoria, prioridade, bloco, área comum, dia de abertura e status. A prioridade `URGENTE` aparece em maiúsculas.
 - **2 — Abrir chamado:** permite escolher categoria e prioridade por número e pede descrição, bloco, área comum e dia simulado. Entradas inválidas são solicitadas novamente. O chamado começa como `aberto`, é gravado no CSV e recebe um protocolo sequencial.
 - **3 — Consultar protocolo:** mostra todos os campos de um chamado ou avisa que ele não foi encontrado.
 - **4 — Filtrar:** por categoria, por status ou pelos dois; valores fora da lista são recusados.
