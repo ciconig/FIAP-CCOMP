@@ -1,6 +1,6 @@
-# Help desk de condomínio — Global Solution
+# Nexcondo — help desk de condomínio (Global Solution)
 
-## Equipe: Nexcondo
+## Equipe: Nexotech
 
 | Integrante | RM |
 |---|---|
@@ -10,7 +10,7 @@
 | Nicolas Jordão Souza | RM575020 |
 | Matheus Luiz Neiva Rossilho Moysés | RM574836 |
 
-Help desk de condomínio para registrar, acompanhar e analisar problemas nas áreas comuns. Usa apenas a biblioteca padrão do Python 3.
+O Nexcondo é um help desk de condomínio para registrar, acompanhar e analisar problemas nas áreas comuns. Usa apenas a biblioteca padrão do Python 3.
 
 Os registros são fictícios. Informe apenas bloco e área comum: não registre nome, apartamento ou outro dado pessoal do morador.
 

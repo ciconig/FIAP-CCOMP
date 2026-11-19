@@ -51,8 +51,8 @@ def cor(texto, nome):
 
 def mostrar_banner(chamados, historico, fila):
     print(cor(BANNER, "marte"))
-    print(cor("  CENTRAL DE CHAMADOS DO CONDOMÍNIO", "titulo"))
-    print(cor("  Manutenção das áreas comuns dos módulos habitacionais", "suave"))
+    print(cor("  NEXCONDO · CENTRAL DE CHAMADOS DO CONDOMÍNIO", "titulo"))
+    print(cor("  Manutenção das áreas comuns dos módulos habitacionais · por Nexotech", "suave"))
     print(f"  {len(chamados)} chamados válidos · "
           f"{len(historico)} eventos registrados · {len(fila)} aguardando triagem")
 
@@ -60,7 +60,7 @@ def mostrar_banner(chamados, historico, fila):
 def mostrar_menu():
     linha = cor("  " + "─" * 58, "marte")
     print("\n" + linha)
-    print(cor("   PAINEL DE CONTROLE · COLÔNIA AURORA", "titulo"))
+    print(cor("   NEXCONDO · PAINEL DE CONTROLE DA COLÔNIA AURORA", "titulo"))
     print(linha)
     opcoes = [
         ("1", "Listar chamados", "6", "Atualizar status"),
