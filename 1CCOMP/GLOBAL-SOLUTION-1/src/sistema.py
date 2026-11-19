@@ -1,4 +1,3 @@
-"""Menu do help desk do condomínio, usando apenas Python padrão."""
 from chamados import (
     atender_proximo_fila, atualizar_status, consultar_protocolo,
     exibir_ultimas_atualizacoes, filtrar_chamados, listar_chamados, montar_fila,
@@ -60,8 +59,6 @@ def main():
     except (ValueError, OSError) as falha:
         erro(f"Erro ao carregar os dados iniciais: {falha}")
         return
-    # Lista = todos os chamados; dicionário = acesso por protocolo;
-    # fila = abertos por ordem de registro; histórico = pilha de eventos.
     por_protocolo = {chamado["protocolo"]: chamado for chamado in chamados}
     fila_triagem = montar_fila(chamados)
     mostrar_banner(chamados, historico, fila_triagem)

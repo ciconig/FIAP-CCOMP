@@ -1,5 +1,3 @@
-// Regras do help desk em JavaScript, espelhando src/dados.py, src/chamados.py
-// e src/dashboard.py. Funções puras: não mexem na página.
 (function (raiz) {
   "use strict";
 
@@ -40,7 +38,6 @@
     return numero > 0 ? numero : null;
   }
 
-  // Mesmo comportamento de dados.validar: lista de erros, vazia se válido.
   function validar(chamado) {
     const dados = {};
     CAMPOS.forEach((campo) => { dados[campo] = texto(chamado, campo); });
@@ -64,7 +61,6 @@
     return erros;
   }
 
-  // Como dados.carregar: separa válidos, reserva todos os números e junta avisos.
   function carregar(linhas) {
     const validos = [];
     const numeros = new Set();
@@ -84,7 +80,6 @@
     return "CH-" + String(maior + 1).padStart(3, "0");
   }
 
-  // Fila de triagem: abertos na ordem de registro (FIFO).
   function montarFila(chamados) {
     return chamados.filter((c) => c.status === "aberto");
   }
@@ -97,7 +92,6 @@
     return dia;
   }
 
-  // Valida uma mudança de status sem aplicá-la. Retorna uma mensagem de erro ou null.
   function checarTransicao(chamado, novo, dia, historico) {
     if (!STATUS.includes(novo)) return "Status desconhecido.";
     if (!TRANSICOES[chamado.status].includes(novo)) {
@@ -108,7 +102,6 @@
     return null;
   }
 
-  // Aplica a mudança e empilha o evento (como chamados._registrar).
   function registrar(chamado, novo, dia, observacao, historico, fila) {
     historico.push({
       protocolo: chamado.protocolo, dia_evento: String(dia),
@@ -120,7 +113,6 @@
     if (posicao >= 0) fila.splice(posicao, 1);
   }
 
-  // Pilha: lê do topo uma cópia, sem esvaziar o histórico.
   function ultimosEventos(historico, quantidade) {
     const pilha = historico.slice();
     const recentes = [];
@@ -128,7 +120,6 @@
     return recentes;
   }
 
-  // ---- Painel (src/dashboard.py) ----
   function nomeBloco(chamado) {
     return chamado.bloco.trim().split(/\s+/).map((p) =>
       p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join(" ");

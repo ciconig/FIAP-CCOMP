@@ -1,6 +1,6 @@
 # Nexcondo — help desk de condomínio (Global Solution)
 
-## Equipe: Nexotech
+## Equipe: NexoTech
 
 | Integrante | RM |
 |---|---|

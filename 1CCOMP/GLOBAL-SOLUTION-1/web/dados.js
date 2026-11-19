@@ -1,4 +1,3 @@
-// Gerado por web/gerar_dados.py a partir de data/*.csv. Não edite à mão.
 window.DADOS_CHAMADOS = [
  {
   "protocolo": "CH-001",

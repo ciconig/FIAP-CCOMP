@@ -1,4 +1,3 @@
-// Painel web do help desk. As regras vêm de regras.js; aqui só há tela e interação.
 (function () {
   "use strict";
   const R = window.Regras;
@@ -7,7 +6,6 @@
   const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const temAnime = () => Boolean(window.anime) && !reduzido;
 
-  // anime.js é só acabamento: sem ele (offline) ou com movimento reduzido, tudo aparece pronto.
   function animar(opcoes) {
     if (temAnime()) return window.anime(opcoes);
     if (opcoes.update) opcoes.update();
@@ -31,16 +29,15 @@
     "aguardando_terceiro>em_atendimento": "Retomar atendimento",
   };
 
-  // ---- Estado: as mesmas estruturas do Python ----
   const carga = R.carregar(window.DADOS_CHAMADOS);
-  const chamados = carga.chamados;                                    // lista
-  const numeros = carga.numeros;                                      // protocolos reservados
-  const porProtocolo = {};                                            // dicionário
+  const chamados = carga.chamados;
+  const numeros = carga.numeros;
+  const porProtocolo = {};
   chamados.forEach((c) => { porProtocolo[c.protocolo] = c; });
-  const fila = R.montarFila(chamados);                                // fila (FIFO)
-  const historico = window.DADOS_HISTORICO.map((e) => Object.assign({}, e)); // pilha
+  const fila = R.montarFila(chamados);
+  const historico = window.DADOS_HISTORICO.map((e) => Object.assign({}, e));
   const filtro = { bloco: "", status: "", categoria: "", blocoLista: "", busca: "" };
-  let aberto = null; // chamado exibido na gaveta
+  let aberto = null;
 
   const referencia = () => R.diaReferencia(chamados, historico);
   const base = () => (filtro.bloco ? chamados.filter((c) => R.nomeBloco(c) === filtro.bloco) : chamados);
@@ -68,7 +65,6 @@
       update: () => { el.textContent = formato(temAnime() ? proxy.v : valor); } });
   }
 
-  // ---- Cabeçalho, faixa e KPIs ----
   function desenharFaixa() {
     const ind = R.calcularIndicadores(chamados, historico);
     $("#sol").textContent = `Sol ${ind.referencia}`;
@@ -113,7 +109,6 @@
     });
   }
 
-  // ---- Rosca por status ----
   function desenharRosca() {
     const lista = base();
     const contagem = R.contarPor(lista, "status", R.STATUS);
@@ -148,7 +143,6 @@
       <span class="bolinha" style="background:${COR[s]}"></span>${rot(s)}<span class="n">${contagem[s]} · ${R.formatar(R.percentual(contagem[s], total))}%</span></button></li>`).join("");
   }
 
-  // ---- Barras por categoria (empilhadas por status) ----
   function desenharBarras() {
     const lista = base();
     const contagem = R.contarPor(lista, "categoria", R.CATEGORIAS);
@@ -166,7 +160,6 @@
     if (!temAnime()) partes.forEach((el) => { el.style.width = el.dataset.largura + "%"; });
   }
 
-  // ---- Mapa de calor bloco × status ----
   function desenharMatriz() {
     const blocos = filtro.bloco ? [filtro.bloco] : R.blocosDisponiveis(chamados);
     const m = R.matriz(chamados, blocos, R.nomeBloco);
@@ -183,7 +176,6 @@
     entrar("#matriz td button", { delay: escalonar(18), translateY: [4, 0] });
   }
 
-  // ---- Fila e pilha ----
   function desenharFila() {
     $("#fila").innerHTML = fila.length ? fila.slice(0, 6).map((c, i) => `<li><span class="pos">${i + 1}º</span>
         <span style="flex:1;min-width:0"><b class="mono">${esc(c.protocolo)}</b> ${esc(c.descricao)}<br><span class="suave">${esc(c.bloco)} · ${esc(c.area)}</span></span>
@@ -202,7 +194,6 @@
     $("#pilha").innerHTML = R.ultimosEventos(historico, 5).map((e, i) => linhaEvento(e, i === 0)).join("");
   }
 
-  // ---- Indicadores e conclusão ----
   function desenharIndicadores() {
     const lista = base();
     const ind = R.calcularIndicadores(lista, historico, referencia());
@@ -218,7 +209,6 @@
     $("#conclusao").innerHTML = R.gerarConclusao(lista, ind).map((f) => `<li>${esc(f)}</li>`).join("");
   }
 
-  // ---- Lista lateral ----
   function atrasadosSet() {
     return new Set(R.calcularIndicadores(chamados, historico).atrasados.map((c) => c.protocolo));
   }
@@ -230,7 +220,6 @@
       (!filtro.status || c.status === filtro.status) && (!filtro.categoria || c.categoria === filtro.categoria) &&
       (!filtro.blocoLista || R.nomeBloco(c) === filtro.blocoLista) &&
       (!busca || [c.protocolo, c.descricao, c.area, c.bloco].join(" ").toLowerCase().includes(busca)));
-    // Pendentes primeiro (mais urgentes no topo), resolvidos por último.
     const peso = { urgente: 0, alta: 1, normal: 2 };
     lista.sort((a, b) => (a.status === "resolvido") - (b.status === "resolvido") || peso[a.prioridade] - peso[b.prioridade] ||
       parseInt(a.dia_abertura, 10) - parseInt(b.dia_abertura, 10));
@@ -251,7 +240,6 @@
     entrar("#itens .item-chamado", { delay: escalonar(20), duration: 300 });
   }
 
-  // ---- Gaveta de detalhe ----
   function abrirCamada(el) {
     $("#veu").hidden = false;
     el.hidden = false;
@@ -347,7 +335,6 @@
     atualizar();
   }
 
-  // ---- Modal de novo chamado ----
   const novo = { categoria: "", prioridade: "" };
   function prepararModal() {
     $("#op-categoria").innerHTML = R.CATEGORIAS.map((c) => `<button type="button" data-valor="${c}" aria-pressed="false">${rot(c)}</button>`).join("");
@@ -401,7 +388,6 @@
     $("#op-categoria button").focus();
   }
 
-  // ---- Filtros e eventos ----
   function alternar(campo, valor) {
     filtro[campo] = filtro[campo] === valor ? "" : valor;
     desenharTudo(false);

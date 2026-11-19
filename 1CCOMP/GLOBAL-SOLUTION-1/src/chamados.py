@@ -1,9 +1,3 @@
-"""Operações do help desk: consulta, filtro, fila de triagem, status e histórico.
-
-Usa as mesmas constantes e o mesmo formato de histórico de dados.py, para que
-as regras documentadas no README valham tanto na carga quanto no menu.
-"""
-
 from dados import CATEGORIAS, STATUS, TRANSICOES, dia_simulado
 from visual import cor, erro, ok, status as cor_status
 
@@ -11,7 +5,6 @@ QTD_ULTIMAS = 5
 
 
 def montar_fila(chamados):
-    """Fila de triagem: chamados abertos na ordem em que foram registrados."""
     fila = []
     for chamado in chamados:
         if chamado["status"] == "aberto":
@@ -32,7 +25,6 @@ def listar_chamados(chamados):
 
 
 def _ler_dia(mensagem, minimo):
-    """Pede um dia simulado inteiro, igual ou posterior ao mínimo informado."""
     while True:
         dia = dia_simulado(input(mensagem).strip())
         if dia is not None and dia >= minimo:
@@ -41,7 +33,6 @@ def _ler_dia(mensagem, minimo):
 
 
 def _ultimo_dia(chamado, historico):
-    """Último dia conhecido do chamado: abertura ou evento mais recente."""
     dia = int(chamado["dia_abertura"])
     for evento in historico:
         if evento["protocolo"] == chamado["protocolo"]:
@@ -50,7 +41,6 @@ def _ultimo_dia(chamado, historico):
 
 
 def _registrar(chamado, novo, dia, observacao, historico):
-    """Aplica a mudança de status e empilha o evento no histórico."""
     historico.append({
         "protocolo": chamado["protocolo"],
         "dia_evento": str(dia),
@@ -93,7 +83,6 @@ def filtrar_chamados(chamados):
 
 
 def atender_proximo_fila(fila_triagem, historico):
-    """Retira o primeiro da fila (FIFO) e o coloca em atendimento."""
     if not fila_triagem:
         ok("Não há chamados na fila de triagem.")
         return None
@@ -138,7 +127,6 @@ def atualizar_status(por_protocolo, fila_triagem, historico):
 
 
 def exibir_ultimas_atualizacoes(historico):
-    """Mostra o topo da pilha sem alterá-la: desempilha uma cópia."""
     if not historico:
         print("Não há atualizações registradas.")
         return

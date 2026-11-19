@@ -1,16 +1,8 @@
-"""Identidade visual do terminal: Colônia Aurora, condomínio em Marte.
-
-As cores são só um reforço: toda informação também aparece em texto. Elas
-ficam desligadas quando a saída não é um terminal (testes, arquivos) ou
-quando a variável de ambiente NO_COLOR está definida.
-"""
-
 import os
 import sys
 
-# Códigos ANSI: 31 vermelho, 32 verde, 33 amarelo, 35 magenta, 36 ciano, 1 negrito, 2 fraco.
 CORES = {
-    "marte": "38;5;208",  # laranja marciano
+    "marte": "38;5;208",
     "titulo": "1;38;5;208",
     "ok": "32",
     "erro": "31",
@@ -25,7 +17,7 @@ CORES_STATUS = {
 }
 
 if os.name == "nt":
-    os.system("")  # ativa as sequências ANSI no console do Windows
+    os.system("")
 
 BANNER = r"""
         *          .            +             .          *
@@ -52,7 +44,7 @@ def cor(texto, nome):
 def mostrar_banner(chamados, historico, fila):
     print(cor(BANNER, "marte"))
     print(cor("  NEXCONDO · CENTRAL DE CHAMADOS DO CONDOMÍNIO", "titulo"))
-    print(cor("  Manutenção das áreas comuns dos módulos habitacionais · por Nexotech", "suave"))
+    print(cor("  Manutenção das áreas comuns dos módulos habitacionais · uma solução NexoTech", "suave"))
     print(f"  {len(chamados)} chamados válidos · "
           f"{len(historico)} eventos registrados · {len(fila)} aguardando triagem")
 
