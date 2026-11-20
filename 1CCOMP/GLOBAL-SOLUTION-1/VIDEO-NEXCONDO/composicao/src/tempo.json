@@ -1,0 +1,223 @@
+{
+  "voice": "Narracao.wav",
+  "frames": 1532,
+  "scenes": [
+    {
+      "frame": 0,
+      "phrases": [
+        {
+          "start": 0.46,
+          "end": 2.655
+        },
+        {
+          "start": 2.955,
+          "end": 5.667
+        },
+        {
+          "start": 5.967,
+          "end": 6.965
+        }
+      ],
+      "duration": 173
+    },
+    {
+      "frame": 173,
+      "phrases": [
+        {
+          "start": 7.445,
+          "end": 11.136
+        },
+        {
+          "start": 11.436,
+          "end": 15.869
+        }
+      ],
+      "duration": 214
+    },
+    {
+      "frame": 387,
+      "phrases": [
+        {
+          "start": 16.349,
+          "end": 22.405
+        },
+        {
+          "start": 22.705,
+          "end": 26.195
+        },
+        {
+          "start": 26.495,
+          "end": 28.069
+        }
+      ],
+      "duration": 292
+    },
+    {
+      "frame": 679,
+      "phrases": [
+        {
+          "start": 28.549,
+          "end": 32.585
+        },
+        {
+          "start": 32.885,
+          "end": 38.149
+        },
+        {
+          "start": 38.449,
+          "end": 41.467
+        }
+      ],
+      "duration": 322
+    },
+    {
+      "frame": 1001,
+      "phrases": [
+        {
+          "start": 41.947,
+          "end": 43.723
+        },
+        {
+          "start": 44.023,
+          "end": 47.595
+        },
+        {
+          "start": 47.895,
+          "end": 53.465
+        }
+      ],
+      "duration": 288
+    },
+    {
+      "frame": 1289,
+      "phrases": [
+        {
+          "start": 53.945,
+          "end": 57.427
+        },
+        {
+          "start": 57.727,
+          "end": 61.962
+        }
+      ],
+      "duration": 243
+    }
+  ],
+  "cues": [
+    {
+      "start": 0.46,
+      "end": 2.655,
+      "text": "A luz da garagem do bloco B apagou."
+    },
+    {
+      "start": 2.955,
+      "end": 5.667,
+      "text": "No grupo do condomínio, surge a pergunta de sempre."
+    },
+    {
+      "start": 5.967,
+      "end": 6.965,
+      "text": "Alguém já avisou?"
+    },
+    {
+      "start": 7.445,
+      "end": 9.505,
+      "text": "Com o Nexcondo, esse aviso vira um chamado"
+    },
+    {
+      "start": 9.505,
+      "end": 11.136,
+      "text": "que o morador pode acompanhar."
+    },
+    {
+      "start": 11.436,
+      "end": 13.81,
+      "text": "O painel reúne os pedidos das áreas comuns"
+    },
+    {
+      "start": 13.81,
+      "end": 15.869,
+      "text": "e mostra o que ainda precisa de atenção."
+    },
+    {
+      "start": 16.349,
+      "end": 19.307,
+      "text": "Em Novo chamado, o morador escolhe iluminação,"
+    },
+    {
+      "start": 19.307,
+      "end": 22.405,
+      "text": "marca a prioridade alta e indica onde está o problema."
+    },
+    {
+      "start": 22.705,
+      "end": 26.195,
+      "text": "Basta descrever a falha na entrada da garagem e registrar."
+    },
+    {
+      "start": 26.495,
+      "end": 28.069,
+      "text": "O chamado ganha um protocolo."
+    },
+    {
+      "start": 28.549,
+      "end": 31.456,
+      "text": "Com esse código, a administração encontra a ocorrência"
+    },
+    {
+      "start": 31.456,
+      "end": 32.585,
+      "text": "e inicia o atendimento."
+    },
+    {
+      "start": 32.885,
+      "end": 35.41,
+      "text": "No dia seguinte, a equipe troca a luminária,"
+    },
+    {
+      "start": 35.41,
+      "end": 38.149,
+      "text": "registra o teste e marca o chamado como resolvido."
+    },
+    {
+      "start": 38.449,
+      "end": 41.467,
+      "text": "Quem consulta o histórico vê o que foi feito e quando."
+    },
+    {
+      "start": 41.947,
+      "end": 43.723,
+      "text": "E onde concentrar o próximo reparo?"
+    },
+    {
+      "start": 44.023,
+      "end": 47.595,
+      "text": "No mapa por bloco, a administração compara as pendências."
+    },
+    {
+      "start": 47.895,
+      "end": 50.963,
+      "text": "Ao selecionar o bloco B, os gráficos e a lista"
+    },
+    {
+      "start": 50.963,
+      "end": 53.465,
+      "text": "passam a mostrar os chamados daquele local."
+    },
+    {
+      "start": 53.945,
+      "end": 55.94,
+      "text": "Da luz que apagou ao reparo confirmado,"
+    },
+    {
+      "start": 55.94,
+      "end": 57.427,
+      "text": "cada etapa fica visível."
+    },
+    {
+      "start": 57.727,
+      "end": 61.962,
+      "text": "Nexcondo. Chamados organizados. Comunidade conectada."
+    }
+  ]
+}
