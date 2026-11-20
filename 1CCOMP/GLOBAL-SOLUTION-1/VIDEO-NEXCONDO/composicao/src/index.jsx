@@ -54,7 +54,6 @@ function Film() {
   return <AbsoluteFill style={{background:paper}}>
     {timeline.scenes.map((s,index)=><Sequence key={index} from={s.frame} durationInFrames={s.duration} name={['Uma ocorrência','O painel','Novo chamado','Atendimento','Gestão por bloco','Reparo confirmado'][index]}><Scene index={index}/></Sequence>)}
     <Audio src={staticFile(timeline.voice)}/>
-    <Audio src={staticFile('trilha.mp3')}/>
     <Transition/>
     <Captions/>
   </AbsoluteFill>;
