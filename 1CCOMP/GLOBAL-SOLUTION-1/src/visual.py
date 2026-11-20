@@ -49,9 +49,29 @@ def mostrar_banner(chamados, historico, fila):
           f"{len(historico)} eventos registrados · {len(fila)} aguardando triagem")
 
 
+def interativo():
+    return sys.stdin.isatty() and sys.stdout.isatty()
+
+
+def limpar_tela():
+    if interativo():
+        print("\033[2J\033[3J\033[H", end="", flush=True)
+
+
+def pausar():
+    if interativo():
+        input(cor("\nPressione Enter para voltar ao menu…", "suave"))
+
+
+def mostrar_cabecalho(chamados, historico, fila):
+    pendentes = sum(1 for chamado in chamados if chamado["status"] != "resolvido")
+    print(cor("  NEXCONDO", "titulo") + cor(" · Colônia Aurora · Habitat Marte-1", "suave"))
+    print(f"  {len(chamados)} chamados · {pendentes} pendentes · {len(fila)} na fila · {len(historico)} eventos")
+
+
 def mostrar_menu():
     linha = cor("  " + "─" * 58, "marte")
-    print("\n" + linha)
+    print(linha)
     print(cor("   NEXCONDO · PAINEL DE CONTROLE DA COLÔNIA AURORA", "titulo"))
     print(linha)
     opcoes = [
