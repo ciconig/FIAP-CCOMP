@@ -2,6 +2,8 @@
 
 Global Solution 2026.2 · Ciência da Computação ON · desafio CitizenTech, case *Neighborhood Action Dashboard*.
 
+[Como executar](#6-como-executar) · [Vídeo de apresentação](#9-vídeo-de-apresentação) · [Dashboard web](#dashboard-web-opcional) · [Arquivos da entrega](#organização-da-entrega)
+
 ## 1. Equipe: NexoTech
 
 | Integrante | RM |
@@ -270,7 +272,9 @@ Pendências fora do prazo (urgente 1 dia(s), alta 3 dia(s), normal 7 dia(s)): 9 
 
 ## 9. Vídeo de apresentação
 
-**[Assistir no YouTube](https://www.youtube.com/watch?v=7vBMwB1HzT4)**
+O vídeo acompanha o chamado `CH-015` na interface web, da abertura pelo morador ao registro do reparo na garagem do Bloco B. A demonstração tem legendas em português e narração de Jessica Marques, integrante da equipe.
+
+[Assistir no YouTube](https://www.youtube.com/watch?v=7vBMwB1HzT4) · [Vídeo em MP4](VIDEO-NEXCONDO/Nexcondo.mp4) · [Legendas em SRT](VIDEO-NEXCONDO/Nexcondo.srt) · [Documentação da composição em Remotion](VIDEO-NEXCONDO/README.md)
 
 ## 10. Conclusões, limitações e aprendizados
 
@@ -307,7 +311,7 @@ O `web/index.html` é um painel visual com as mesmas regras, traduzidas em `web/
 - fila, pilha, indicadores e conclusão;
 - cadastro e mudança de status.
 
-A **opção 10 do menu** exporta os dados da sessão para `web/dados.js` e abre a página no navegador. A ligação vai só do terminal para a web: o que é feito na página vale só naquela aba. Para gerar os dados sem abrir o menu, use `python web/gerar_dados.py`.
+A **opção 10 do menu** exporta os dados da sessão para `web/dados.js` e abre a página no navegador. Você também pode abrir o arquivo [web/index.html](web/index.html) diretamente para usar os dados já exportados. Para atualizar a exportação a partir dos CSVs, execute `python web/gerar_dados.py` na pasta do projeto. Os cadastros e as mudanças de status feitos no navegador duram até recarregar ou fechar a página.
 
 O dashboard usa HTML, CSS, JavaScript e [anime.js](https://animejs.com/) 3.2.2, que estão fora do conteúdo das fases 1 a 3. Por isso ele é só um complemento: **o sistema avaliado é o Python** (`python src/sistema.py`).
 
@@ -329,6 +333,7 @@ GLOBAL-SOLUTION-1/
 │   └── painel_web.py       # opção 10: exporta a sessão e abre o dashboard web
 ├── tests/                  # test_dados.py, test_chamados.py, test_dashboard.py
 ├── web/                    # dashboard web opcional
+├── VIDEO-NEXCONDO/         # vídeo, legendas e composição em Remotion
 └── docs/uso_ia.md          # registro do uso de inteligência artificial
 ```
 

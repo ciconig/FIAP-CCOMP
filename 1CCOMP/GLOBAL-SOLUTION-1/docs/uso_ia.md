@@ -9,6 +9,7 @@ Ferramentas: Codex (OpenAI) e Claude (Anthropic), em 18/11/2026.
 - **Dados fictícios:** apoio na criação dos chamados e do histórico simulados.
 - **Código:** apoio na escrita da validação e leitura dos CSV (`dados.py`), na integração do menu com os módulos de chamados e painel, nos testes automatizados, no tema visual do terminal (`visual.py`) e na interface web (`web/`).
 - **Revisão da documentação:** organização e formatação do README.
+- **Criação do vídeo pitch:** apoio de IA na produção do vídeo de apresentação do Nexcondo, montado no Remotion. A narração foi gravada por Jessica Marques, integrante da equipe. [Documentação do vídeo](../VIDEO-NEXCONDO/README.md)
 
 ## Como os resultados foram verificados
 
