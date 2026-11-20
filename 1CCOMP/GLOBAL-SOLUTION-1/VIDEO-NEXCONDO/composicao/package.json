@@ -1,0 +1,14 @@
+{
+  "name": "nexcondo-demonstracao",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio src/index.jsx",
+    "video": "remotion render src/index.jsx Nexcondo ../Nexcondo.mp4 --codec=h264 --crf=19 --audio-bitrate=192k --pixel-format=yuv420p"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.545",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "remotion": "4.0.545"
+  }
+}
