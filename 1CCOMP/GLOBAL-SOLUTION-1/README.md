@@ -168,6 +168,8 @@ python src/sistema.py
 | 10 | abre o dashboard web com os dados desta sessão (opcional, ver a seção "Extras") |
 | 0 | sai |
 
+No terminal, cada operação mostra o resultado e espera um **Enter**; depois a tela é limpa e o menu volta ao topo, com um resumo de uma linha (chamados, pendentes, fila e eventos). Quando a saída não é um terminal (testes ou redirecionamento), a tela não é limpa e não há pausa.
+
 **Os dados ficam em `data/`:**
 
 - `chamados.csv`: os chamados, em UTF-8 e separados por vírgula;

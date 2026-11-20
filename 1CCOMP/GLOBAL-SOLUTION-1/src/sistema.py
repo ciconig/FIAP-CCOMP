@@ -8,7 +8,7 @@ from dados import (
 )
 from indicadores import exibir_painel_indicadores, exibir_visao_por_bloco
 from painel_web import abrir_painel_web
-from visual import erro, mostrar_banner, mostrar_menu, ok
+from visual import erro, limpar_tela, mostrar_banner, mostrar_cabecalho, mostrar_menu, ok, pausar
 
 
 def escolher(rotulo, opcoes):
@@ -63,7 +63,13 @@ def main():
     por_protocolo = {chamado["protocolo"]: chamado for chamado in chamados}
     fila_triagem = montar_fila(chamados)
     mostrar_banner(chamados, historico, fila_triagem)
+    primeira_tela = True
     while True:
+        if not primeira_tela:
+            limpar_tela()
+            mostrar_cabecalho(chamados, historico, fila_triagem)
+        primeira_tela = False
+        print()
         mostrar_menu()
         opcao = input("Escolha: ").strip()
         if opcao == "0":
@@ -97,6 +103,7 @@ def main():
                 erro("Opção inválida. Tente novamente.")
         except (ValueError, OSError) as falha:
             erro(f"Erro ao acessar os dados: {falha}")
+        pausar()
 
 
 if __name__ == "__main__":
