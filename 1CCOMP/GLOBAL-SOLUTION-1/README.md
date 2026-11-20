@@ -270,7 +270,7 @@ Pendências fora do prazo (urgente 1 dia(s), alta 3 dia(s), normal 7 dia(s)): 9 
 
 ## 9. Vídeo de apresentação
 
-**[LINK DO VÍDEO NO YOUTUBE: preencher antes da entrega]**
+**[Assistir no YouTube](https://www.youtube.com/watch?v=7vBMwB1HzT4)**
 
 ## 10. Conclusões, limitações e aprendizados
 
