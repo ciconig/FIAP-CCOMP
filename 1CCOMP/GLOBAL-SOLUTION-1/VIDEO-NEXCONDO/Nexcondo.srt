@@ -1,91 +1,92 @@
 1
-00:00:00,460 --> 00:00:02,655
+00:00:01,237 --> 00:00:04,220
 A luz da garagem do bloco B apagou.
 
 2
-00:00:02,955 --> 00:00:05,667
+00:00:04,840 --> 00:00:07,500
 No grupo do condomínio, surge a pergunta de sempre.
 
 3
-00:00:05,967 --> 00:00:06,965
+00:00:07,800 --> 00:00:09,280
 Alguém já avisou?
 
 4
-00:00:07,445 --> 00:00:09,505
+00:00:09,580 --> 00:00:13,220
 Com o Nexcondo, esse aviso vira um chamado
 
 5
-00:00:09,505 --> 00:00:11,136
+00:00:13,220 --> 00:00:15,920
 que o morador pode acompanhar.
 
 6
-00:00:11,436 --> 00:00:13,810
+00:00:16,240 --> 00:00:19,960
 O painel reúne os pedidos das áreas comuns
 
 7
-00:00:13,810 --> 00:00:15,869
+00:00:19,960 --> 00:00:22,780
 e mostra o que ainda precisa de atenção.
 
 8
-00:00:16,349 --> 00:00:19,307
+00:00:22,780 --> 00:00:27,080
 Em Novo chamado, o morador escolhe iluminação,
 
 9
-00:00:19,307 --> 00:00:22,405
+00:00:27,080 --> 00:00:31,720
 marca a prioridade alta e indica onde está o problema.
 
 10
-00:00:22,705 --> 00:00:26,195
+00:00:32,460 --> 00:00:37,020
 Basta descrever a falha na entrada da garagem e registrar.
 
 11
-00:00:26,495 --> 00:00:28,069
+00:00:37,460 --> 00:00:40,000
 O chamado ganha um protocolo.
 
 12
-00:00:28,549 --> 00:00:31,456
+00:00:40,220 --> 00:00:44,600
 Com esse código, a administração encontra a ocorrência
 
 13
-00:00:31,456 --> 00:00:32,585
+00:00:44,600 --> 00:00:45,920
 e inicia o atendimento.
 
 14
-00:00:32,885 --> 00:00:35,410
+00:00:46,220 --> 00:00:50,480
 No dia seguinte, a equipe troca a luminária,
 
 15
-00:00:35,410 --> 00:00:38,149
+00:00:50,480 --> 00:00:54,300
 registra o teste e marca o chamado como resolvido.
 
 16
-00:00:38,449 --> 00:00:41,467
+00:00:54,970 --> 00:00:59,280
 Quem consulta o histórico vê o que foi feito e quando.
 
 17
-00:00:41,947 --> 00:00:43,723
+00:01:00,770 --> 00:01:03,440
 E onde concentrar o próximo reparo?
 
 18
-00:00:44,023 --> 00:00:47,595
+00:01:04,270 --> 00:01:08,700
 No mapa por bloco, a administração compara as pendências.
 
 19
-00:00:47,895 --> 00:00:50,963
+00:01:08,860 --> 00:01:12,860
 Ao selecionar o bloco B, os gráficos e a lista
 
 20
-00:00:50,963 --> 00:00:53,465
+00:01:12,860 --> 00:01:16,080
 passam a mostrar os chamados daquele local.
 
 21
-00:00:53,945 --> 00:00:55,940
+00:01:16,590 --> 00:01:19,760
 Da luz que apagou ao reparo confirmado,
 
 22
-00:00:55,940 --> 00:00:57,427
+00:01:19,760 --> 00:01:22,520
 cada etapa fica visível.
 
 23
-00:00:57,727 --> 00:01:01,962
+00:01:23,600 --> 00:01:28,500
 Nexcondo. Chamados organizados. Comunidade conectada.
+

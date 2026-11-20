@@ -2,9 +2,9 @@
 
 [Assistir ao vídeo](Nexcondo.mp4) · [Baixar as legendas em português](Nexcondo.srt) · [Ouvir a narração isolada](composicao/public/Narracao.wav)
 
-O filme acompanha o chamado CH-015, da abertura pelo morador ao registro do reparo na garagem do Bloco B. As telas vêm de uma sessão da interface web com os dados simulados do projeto. A composição em Remotion reúne essas capturas, as animações, as legendas abertas, a locução e uma trilha instrumental original.
+O filme acompanha o chamado CH-015, da abertura pelo morador ao registro do reparo na garagem do Bloco B. As telas vêm de uma sessão da interface web com os dados simulados do projeto. A composição em Remotion reúne essas capturas, as animações, as legendas abertas e a narração.
 
-A voz em português brasileiro foi sintetizada localmente com Piper e o modelo Faber. [Ficha da voz](https://huggingface.co/rhasspy/piper-voices/blob/main/pt/pt_BR/faber/medium/MODEL_CARD)
+A narração foi gravada por Jessica Marques, integrante da equipe. Os tempos das cenas e das legendas acompanham a gravação.
 
 ## Editar ou renderizar novamente
 

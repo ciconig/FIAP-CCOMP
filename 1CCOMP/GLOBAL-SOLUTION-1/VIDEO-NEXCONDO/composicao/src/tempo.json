@@ -1,222 +1,222 @@
 {
   "voice": "Narracao.wav",
-  "frames": 1532,
+  "frames": 2169,
   "scenes": [
     {
       "frame": 0,
       "phrases": [
         {
-          "start": 0.46,
-          "end": 2.655
+          "start": 1.237,
+          "end": 4.22
         },
         {
-          "start": 2.955,
-          "end": 5.667
+          "start": 4.84,
+          "end": 7.5
         },
         {
-          "start": 5.967,
-          "end": 6.965
+          "start": 7.8,
+          "end": 9.28
         }
       ],
-      "duration": 173
+      "duration": 224
     },
     {
-      "frame": 173,
+      "frame": 224,
       "phrases": [
         {
-          "start": 7.445,
-          "end": 11.136
+          "start": 9.58,
+          "end": 15.92
         },
         {
-          "start": 11.436,
-          "end": 15.869
+          "start": 16.24,
+          "end": 22.78
         }
       ],
-      "duration": 214
+      "duration": 317
     },
     {
-      "frame": 387,
+      "frame": 541,
       "phrases": [
         {
-          "start": 16.349,
-          "end": 22.405
+          "start": 22.78,
+          "end": 31.72
         },
         {
-          "start": 22.705,
-          "end": 26.195
+          "start": 32.46,
+          "end": 37.02
         },
         {
-          "start": 26.495,
-          "end": 28.069
+          "start": 37.46,
+          "end": 40.0
         }
       ],
-      "duration": 292
+      "duration": 419
     },
     {
-      "frame": 679,
+      "frame": 960,
       "phrases": [
         {
-          "start": 28.549,
-          "end": 32.585
+          "start": 40.22,
+          "end": 45.92
         },
         {
-          "start": 32.885,
-          "end": 38.149
+          "start": 46.22,
+          "end": 54.3
         },
         {
-          "start": 38.449,
-          "end": 41.467
+          "start": 54.97,
+          "end": 59.28
         }
       ],
-      "duration": 322
+      "duration": 493
     },
     {
-      "frame": 1001,
+      "frame": 1453,
       "phrases": [
         {
-          "start": 41.947,
-          "end": 43.723
+          "start": 60.77,
+          "end": 63.44
         },
         {
-          "start": 44.023,
-          "end": 47.595
+          "start": 64.27,
+          "end": 68.7
         },
         {
-          "start": 47.895,
-          "end": 53.465
+          "start": 68.86,
+          "end": 76.08
         }
       ],
-      "duration": 288
+      "duration": 379
     },
     {
-      "frame": 1289,
+      "frame": 1832,
       "phrases": [
         {
-          "start": 53.945,
-          "end": 57.427
+          "start": 76.59,
+          "end": 82.52
         },
         {
-          "start": 57.727,
-          "end": 61.962
+          "start": 83.6,
+          "end": 88.5
         }
       ],
-      "duration": 243
+      "duration": 337
     }
   ],
   "cues": [
     {
-      "start": 0.46,
-      "end": 2.655,
+      "start": 0.0,
+      "end": 4.22,
       "text": "A luz da garagem do bloco B apagou."
     },
     {
-      "start": 2.955,
-      "end": 5.667,
+      "start": 4.84,
+      "end": 7.5,
       "text": "No grupo do condomínio, surge a pergunta de sempre."
     },
     {
-      "start": 5.967,
-      "end": 6.965,
+      "start": 7.8,
+      "end": 9.28,
       "text": "Alguém já avisou?"
     },
     {
-      "start": 7.445,
-      "end": 9.505,
+      "start": 9.58,
+      "end": 13.22,
       "text": "Com o Nexcondo, esse aviso vira um chamado"
     },
     {
-      "start": 9.505,
-      "end": 11.136,
+      "start": 13.22,
+      "end": 15.92,
       "text": "que o morador pode acompanhar."
     },
     {
-      "start": 11.436,
-      "end": 13.81,
+      "start": 16.24,
+      "end": 19.96,
       "text": "O painel reúne os pedidos das áreas comuns"
     },
     {
-      "start": 13.81,
-      "end": 15.869,
+      "start": 19.96,
+      "end": 22.78,
       "text": "e mostra o que ainda precisa de atenção."
     },
     {
-      "start": 16.349,
-      "end": 19.307,
+      "start": 22.78,
+      "end": 27.08,
       "text": "Em Novo chamado, o morador escolhe iluminação,"
     },
     {
-      "start": 19.307,
-      "end": 22.405,
+      "start": 27.08,
+      "end": 31.72,
       "text": "marca a prioridade alta e indica onde está o problema."
     },
     {
-      "start": 22.705,
-      "end": 26.195,
+      "start": 32.46,
+      "end": 37.02,
       "text": "Basta descrever a falha na entrada da garagem e registrar."
     },
     {
-      "start": 26.495,
-      "end": 28.069,
+      "start": 37.46,
+      "end": 40.0,
       "text": "O chamado ganha um protocolo."
     },
     {
-      "start": 28.549,
-      "end": 31.456,
+      "start": 40.22,
+      "end": 44.6,
       "text": "Com esse código, a administração encontra a ocorrência"
     },
     {
-      "start": 31.456,
-      "end": 32.585,
+      "start": 44.6,
+      "end": 45.92,
       "text": "e inicia o atendimento."
     },
     {
-      "start": 32.885,
-      "end": 35.41,
+      "start": 46.22,
+      "end": 50.48,
       "text": "No dia seguinte, a equipe troca a luminária,"
     },
     {
-      "start": 35.41,
-      "end": 38.149,
+      "start": 50.48,
+      "end": 54.3,
       "text": "registra o teste e marca o chamado como resolvido."
     },
     {
-      "start": 38.449,
-      "end": 41.467,
+      "start": 54.97,
+      "end": 59.28,
       "text": "Quem consulta o histórico vê o que foi feito e quando."
     },
     {
-      "start": 41.947,
-      "end": 43.723,
+      "start": 60.77,
+      "end": 63.44,
       "text": "E onde concentrar o próximo reparo?"
     },
     {
-      "start": 44.023,
-      "end": 47.595,
+      "start": 64.27,
+      "end": 68.7,
       "text": "No mapa por bloco, a administração compara as pendências."
     },
     {
-      "start": 47.895,
-      "end": 50.963,
+      "start": 68.86,
+      "end": 72.86,
       "text": "Ao selecionar o bloco B, os gráficos e a lista"
     },
     {
-      "start": 50.963,
-      "end": 53.465,
+      "start": 72.86,
+      "end": 76.08,
       "text": "passam a mostrar os chamados daquele local."
     },
     {
-      "start": 53.945,
-      "end": 55.94,
+      "start": 76.59,
+      "end": 79.76,
       "text": "Da luz que apagou ao reparo confirmado,"
     },
     {
-      "start": 55.94,
-      "end": 57.427,
+      "start": 79.76,
+      "end": 82.52,
       "text": "cada etapa fica visível."
     },
     {
-      "start": 57.727,
-      "end": 61.962,
+      "start": 83.6,
+      "end": 88.5,
       "text": "Nexcondo. Chamados organizados. Comunidade conectada."
     }
   ]
